@@ -6,7 +6,11 @@ from PIL import ImageTk
 
 window = Tk()
 window.title('3P! The Console')
-window.attributes('-fullscreen', True)
+### Window size
+# Uncomment this one for a rasp install
+#window.attributes('-fullscreen', True)
+# Uncomment this on,e for a windows install
+window.geometry("1200x600")
 window.rowconfigure((0,1), weight=1)
 window.columnconfigure(0,weight=1, uniform='third')
 window.columnconfigure(1,weight=1, uniform='third')
