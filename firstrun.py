@@ -1,22 +1,45 @@
 #imports
 from tkinter import *
 from tkinter import font
+import random, os
+from PIL import ImageTk
 
 window = Tk()
 window.title('3P! The Console')
-window.geometry("1200x600")
+window.attributes('-fullscreen', True)
 window.rowconfigure((0,1), weight=1)
 window.columnconfigure(0,weight=1, uniform='third')
 window.columnconfigure(1,weight=1, uniform='third')
 window.columnconfigure(2,weight=1, uniform='third')
 
-def menu():
-    #Butons below
+# variables for the play button background
+path = r"./games/background/"
+random_background = random.choice([
+    x for x in os.listdir(path)
+    if os.path.isfile(os.path.join(path, x))
+])
+background_path = str(path+random_background)
+background = ImageTk.PhotoImage(master=window, file=background_path)
 
-    ### playbutton
+def selectbackground():
+    global path, random_background, background_path, background
+    random_background = random.choice([
+        x for x in os.listdir(path)
+        if os.path.isfile(os.path.join(path, x))
+    ])
+    background_path = str(path + random_background)
+    background = ImageTk.PhotoImage(master=window, file=background_path)
+
+def menu():
     playfont = font.Font(family='Helvetica', size=40, weight='bold')
-    playbutton = Button(window, bg="#ab4bb4", bd=0, highlightthickness=0, text="Play", font=playfont, fg="white")
+    ### Playbutton
+
+    # Select the button background
+    selectbackground()
+    # Define the playbutton
+    playbutton = Button(window, image=background, bd=0, highlightthickness=0, text="Play", font=playfont, fg="white", command=menu)
     playbutton.grid(row=0, column=0, columnspan=2, sticky='EWNS')
+    # Hover function
     def playbuttonhover(e):
         playbutton['bg'] = '#990099'
     def playbuttonunhover(e):
@@ -24,9 +47,12 @@ def menu():
     playbutton.bind("<Enter>", playbuttonhover)
     playbutton.bind("<Leave>", playbuttonunhover)
 
-    ### settingsbutton
+    ### Settingsbutton
+
+    # Define the playbutton
     settingsbutton = Button(window, bg="#f57270", bd=0, highlightthickness=0, text="Settings", font=playfont, fg="white")
     settingsbutton.grid(row=1, column=2, columnspan=1, sticky='EWNS')
+    # Hover function
     def settingsbuttonhover(e):
         settingsbutton['bg'] = '#f02c28'
     def settingsbuttonunhover(e):
@@ -34,16 +60,16 @@ def menu():
     settingsbutton.bind("<Enter>", settingsbuttonhover)
     settingsbutton.bind("<Leave>", settingsbuttonunhover)
 
-    ### newsbutton
+    ### Newsbutton
+
+    # Define the newsbutton
     newsbutton = Button(window, bg="#60d26f", bd=0, highlightthickness=0, text="News", font=playfont,fg="white")
     newsbutton.grid(row=1, column=0, columnspan=1, sticky='EWNS')
-
+    # Hover function
     def newsbuttonhover(e):
         newsbutton['bg'] = '#2d9f3c'
-
     def newsbuttonunhover(e):
         newsbutton['bg'] = '#60d26f'
-
     newsbutton.bind("<Enter>", newsbuttonhover)
     newsbutton.bind("<Leave>", newsbuttonunhover)
 
