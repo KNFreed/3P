@@ -110,17 +110,17 @@ def menu():
     abutton.bind("<Enter>", abuttonhover)
     abutton.bind("<Leave>", abuttonunhover)
 
-    ### bbutton
-    bbutton = Button(window, bg="#16e6e9", bd=0, highlightthickness=0, text="B button", font=playfont, fg="white")
-    bbutton.grid(row=1, column=2, columnspan=1, sticky='EWNS')
+    ### Appsbutton
+    appsbutton = Button(window, bg="#16e6e9", bd=0, highlightthickness=0, text="Apps", font=playfont, fg="white")
+    appsbutton.grid(row=1, column=2, columnspan=1, sticky='EWNS')
 
-    def bbuttonhover(e):
-        bbutton['bg'] = '#10aeb0'
+    def appsbuttonhover(e):
+        appsbutton['bg'] = '#10aeb0'
 
-    def bbuttonunhover(e):
-        bbutton['bg'] = '#16e6e9'
+    def appsbuttonunhover(e):
+        appsbutton['bg'] = '#16e6e9'
 
-    bbutton.bind("<Enter>", bbuttonhover)
-    bbutton.bind("<Leave>", bbuttonunhover)
+    appsbutton.bind("<Enter>", appsbuttonhover)
+    appsbutton.bind("<Leave>", appsbuttonunhover)
 menu()
 window.mainloop()
