@@ -52,7 +52,7 @@ greybackground = ImageTk.PhotoImage(master=window, file=greybackground_path)
 
 
 def selectbackground():
-    global path, random_background, background_path, background
+    global path, random_background, background_path, background, greypath, greybackground
     random_background = random.choice([
         x for x in os.listdir(path)
         if os.path.isfile(os.path.join(path, x))
@@ -61,6 +61,7 @@ def selectbackground():
     greybackground_path = str(greypath + random_background)
     background = ImageTk.PhotoImage(master=window, file=background_path)
     greybackground = ImageTk.PhotoImage(master=window, file=greybackground_path)
+    print
 
 
 def menu():
