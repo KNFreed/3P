@@ -67,6 +67,13 @@ def menu():
     playfont = font.Font(family='Helvetica', size=40, weight='bold')
     ### Playbutton
 
+
+    # Define image
+    im_settings=Image.open("e:\\settings.png")
+    im_news=Image.open("e:\\news.png")
+    im_A=Image.open("e:\\A button.png")
+    im_B=Image.open("e:\\B button.png")
+    
     # Select the button background
     selectbackground()
     # Define the playbutton
