@@ -19,8 +19,6 @@ time1 = ''
 updatedhour='None'
 #Background color of the UI
 main_background='#696969'
-#Playbutton Background
-
 
 ### Making a grid to place objects
 window.rowconfigure(0,weight=0)
@@ -46,7 +44,21 @@ def tick():
     window.after(1000, tick)
 tick()
 
+### UI
 def menu():
+    # Settings UI
+    def settings():
+
+    # Apps UI
+    def apps():
+
+    # News UI
+    def news():
+
+    # Games UI
+    def play():
+
+    # Menu UI
     playfont = font.Font(family='Helvetica', size=40, weight='bold')
     ### Playbutton
     #Selects random background for the PlayButtonn
@@ -73,8 +85,8 @@ def menu():
 
     ### Settingsbutton
 
-    # Define the playbutton
-    settingsbutton = Button(window, bg="#f57270", bd=0, highlightthickness=0, text="Settings", font=playfont, fg="white")
+    # Define the settingsbutton
+    settingsbutton = Button(window, bg="#f57270", bd=0, highlightthickness=0, text="Settings", font=playfont, fg="white", command=settings)
     settingsbutton.grid(row=2, column=2, columnspan=1, sticky='EWNS')
     # Hover function
     def settingsbuttonhover(e):
