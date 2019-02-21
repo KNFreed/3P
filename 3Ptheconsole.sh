@@ -9,3 +9,4 @@ apt-get install matchbox-keyboard -y
 # Install needed libraries
 sudo pip3 install pillow --update
 sudo pip3 install wifi
+sudo pip3 install GitPython
