@@ -1,9 +1,6 @@
 # 3P!: An Open Source Console working on Raspberry
 ![logo](https://github.com/KNFreed/3P.github.io/raw/master/img/logo.png)
 
-* Works on Raspberry
-* Only works in English
-
 # How to install the 3P!
 
 **1. Update everything and install Git**
