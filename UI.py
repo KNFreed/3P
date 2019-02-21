@@ -1,17 +1,18 @@
 #imports
 from tkinter import *
 from tkinter import font
-import random, os, time
+import random, os, time, sys
 from PIL import ImageTk
+
 
 window = Tk()
 window.title('3P! The Console')
 
 ### Window size
 # Uncomment this one for a rasp install
-#window.attributes('-fullscreen', True)
+window.attributes('-fullscreen', True)
 # Uncomment this one for a windows install
-window.geometry("1200x600")
+#window.geometry("1200x600")
 
 ###Variables
 #Clock variables
@@ -44,19 +45,11 @@ def tick():
     window.after(1000, tick)
 tick()
 
+def stop():
+    os.system("sudo shutdown -h now")
+
 ### UI
 def menu():
-    # Settings UI
-    def settings():
-
-    # Apps UI
-    def apps():
-
-    # News UI
-    def news():
-
-    # Games UI
-    def play():
 
     # Menu UI
     playfont = font.Font(family='Helvetica', size=40, weight='bold')
@@ -83,18 +76,18 @@ def menu():
     playbutton.bind("<Enter>", playbuttonhover)
     playbutton.bind("<Leave>", playbuttonunhover)
 
-    ### Settingsbutton
+    ### stopbutton
 
-    # Define the settingsbutton
-    settingsbutton = Button(window, bg="#f57270", bd=0, highlightthickness=0, text="Settings", font=playfont, fg="white", command=settings)
-    settingsbutton.grid(row=2, column=2, columnspan=1, sticky='EWNS')
+    # Define the stopbutton
+    stopbutton = Button(window, bg="#f57270", bd=0, highlightthickness=0, text="Power off", font=playfont, fg="white", command=stop)
+    stopbutton.grid(row=2, column=2, columnspan=1, sticky='EWNS')
     # Hover function
-    def settingsbuttonhover(e):
-        settingsbutton['bg'] = '#f02c28'
-    def settingsbuttonunhover(e):
-        settingsbutton['bg'] = '#f57270'
-    settingsbutton.bind("<Enter>", settingsbuttonhover)
-    settingsbutton.bind("<Leave>", settingsbuttonunhover)
+    def stopbuttonhover(e):
+        stopbutton['bg'] = '#f02c28'
+    def stopbuttonunhover(e):
+        stopbutton['bg'] = '#f57270'
+    stopbutton.bind("<Enter>", stopbuttonhover)
+    stopbutton.bind("<Leave>", stopbuttonunhover)
 
     ### Newsbutton
 
