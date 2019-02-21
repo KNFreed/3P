@@ -7,7 +7,7 @@
 
 ```
 sudo apt-get update && apt-get upgrade -y
-sudo apt-get install git-core -y
+sudo apt install git-core
 ```
 
 **2. Download the source files and execute the script**
