@@ -7,6 +7,5 @@ apt-get update && apt-get upgrade -y
 apt-get install matchbox-keyboard -y
 
 # Install needed libraries
-
 sudo pip3 install pillow --update
 sudo pip3 install wifi
