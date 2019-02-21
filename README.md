@@ -1,5 +1,5 @@
 # 3P!: An Open Source Console working on Raspberry
-![logo](https://raw.github.com/KNFreed/3P.github.io/blob/master/img/logo.png)
+![logo](https://github.com/KNFreed/3P.github.io/raw/master/img/logo.png)
 
 * Works on Raspberry
 * Only works in English
