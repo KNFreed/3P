@@ -1,12 +1,9 @@
 # Install Script for the 3P Console
-
 # Updates everything
-apt-get update && apt-get upgrade -y
-
+sudo sapt-get update && apt-get upgrade -y
 # Install useful packages
-apt-get install matchbox-keyboard -y
-
+sudo apt-get install matchbox-keyboard -y
 # Install needed libraries
-sudo pip3 install pillow --update
+sudo pip3 install pillow
 sudo pip3 install wifi
 sudo pip3 install GitPython
