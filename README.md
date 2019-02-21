@@ -6,8 +6,8 @@
 **1. Update everything and install Git**
 
 ```
-apt-get update && apt-get upgrade -y
-apt-get install git-core -y
+sudo apt-get update && apt-get upgrade -y
+sudo apt-get install git-core -y
 ```
 
 **2. Download the source files and execute the script**
@@ -16,7 +16,7 @@ apt-get install git-core -y
 cd /tmp
 git clone https://github.com/KNFreed/3P
 cd 3P
-chmod a+x 3Ptheconsole.sh && ./3Ptheconsole.sh
+sudo chmod a+x 3Ptheconsole.sh && ./3Ptheconsole.sh
 ```
 
 
