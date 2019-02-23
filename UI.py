@@ -1,7 +1,7 @@
 #imports
 from tkinter import *
 from tkinter import font
-import random, os, time, sys
+import random, os, time, sys, feedparser
 from PIL import ImageTk
 
 
@@ -18,8 +18,7 @@ window.attributes('-fullscreen', True)
 #Clock variables
 time1 = ''
 updatedhour='None'
-#Background color of the UI
-main_background='#696969'
+
 
 ### Making a grid to place objects
 window.rowconfigure(0,weight=0)
@@ -29,8 +28,15 @@ window.columnconfigure(0,weight=1, uniform='third')
 window.columnconfigure(1,weight=1, uniform='third')
 window.columnconfigure(2,weight=1, uniform='third')
 
+
+### Creating variables for the background color
+    # Will be modified with a local variable later
+backgroundcolor='#696969'
+infobarbackground="#4f4f4f"
+window.configure(background=backgroundcolor)
+
 ### Creating the infobar
-canvas = Canvas(window, height=20, bg=main_background, bd=0, highlightthickness=0,)
+canvas = Canvas(window, height=20, bg=infobarbackground, bd=0, highlightthickness=0,)
 canvas.grid(row=0, column=0, columnspan=3, sticky='EWNS')
 
 ### Creating the time widget
@@ -91,8 +97,18 @@ def menu():
 
     ### Newsbutton
 
+    def news():
+        # Destroy all the buttons that existed
+        playbutton.destroy()
+        stopbutton.destroy()
+        newsbutton.destroy()
+        abutton.destroy()
+        appsbutton.destroy()
+
+        # Display the RSS Feed
+
     # Define the newsbutton
-    newsbutton = Button(window, bg="#60d26f", bd=0, highlightthickness=0, text="News", font=playfont,fg="white")
+    newsbutton = Button(window, bg="#60d26f", bd=0, highlightthickness=0, text="News", font=playfont,fg="white", command=news)
     newsbutton.grid(row=2, column=0, columnspan=1, sticky='EWNS')
     # Hover function
     def newsbuttonhover(e):
