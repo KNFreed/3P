@@ -57,6 +57,13 @@ def stop():
 ### UI
 def menu():
 
+    # Useful defs
+    def destroymenu():
+        playbutton.destroy()
+        stopbutton.destroy()
+        newsbutton.destroy()
+        settingsbutton.destroy()
+        appsbutton.destroy()
     # Menu UI
     playfont = font.Font(family='Helvetica', size=40, weight='bold')
     ### Playbutton
@@ -99,11 +106,7 @@ def menu():
 
     def news():
         # Destroy all the buttons that existed
-        playbutton.destroy()
-        stopbutton.destroy()
-        newsbutton.destroy()
-        abutton.destroy()
-        appsbutton.destroy()
+        destroymenu()
 
         # Display the RSS Feed
 
@@ -118,18 +121,23 @@ def menu():
     newsbutton.bind("<Enter>", newsbuttonhover)
     newsbutton.bind("<Leave>", newsbuttonunhover)
 
-    ### abutton
-    abutton = Button(window, bg="#ffbe4d", bd=0, highlightthickness=0, text="A button", font=playfont, fg="white")
-    abutton.grid(row=2, column=1, columnspan=1, sticky='EWNS')
+    ### settingsbutton
 
-    def abuttonhover(e):
-        abutton['bg'] = '#e69100'
+    def settings():
+        # Destroy all the buttons that existed
+        destroymenu()
 
-    def abuttonunhover(e):
-        abutton['bg'] = '#ffbe4d'
+    settingsbutton = Button(window, bg="#ffbe4d", bd=0, highlightthickness=0, text="Settings", font=playfont, fg="white", command=settings)
+    settingsbutton.grid(row=2, column=1, columnspan=1, sticky='EWNS')
 
-    abutton.bind("<Enter>", abuttonhover)
-    abutton.bind("<Leave>", abuttonunhover)
+    def settingsbuttonhover(e):
+        settingsbutton['bg'] = '#e69100'
+
+    def settingsbuttonunhover(e):
+        settingsbutton['bg'] = '#ffbe4d'
+
+    settingsbutton.bind("<Enter>", settingsbuttonhover)
+    settingsbutton.bind("<Leave>", settingsbuttonunhover)
 
     ### Appsbutton
     appsbutton = Button(window, bg="#16e6e9", bd=0, highlightthickness=0, text="Apps", font=playfont, fg="white")
