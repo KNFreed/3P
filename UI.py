@@ -31,11 +31,18 @@ def configure():
 configure()
 
 ### Creating variables for the background color
-    # Will be modified with a local variable later
-backgroundcolor='#696969'
-infobarbackground="#4f4f4f"
-textcolor="white"
-window.configure(background=backgroundcolor)
+
+light = os.path.isfile('./files/light')
+if light:
+    backgroundcolor = 'white'
+    textcolor = "black"
+    infobarbackground = "#4f4f4f"
+    window.configure(background=backgroundcolor)
+else:
+    backgroundcolor = '#696969'
+    infobarbackground = "#4f4f4f"
+    textcolor = "white"
+    window.configure(background=backgroundcolor)
 
 ### Creating the infobar
 canvas = Canvas(window, height=20, bg=infobarbackground, bd=0, highlightthickness=0)
@@ -166,6 +173,7 @@ def menu():
                 backgroundcolor = '#696969'
                 textcolor = "white"
                 window.configure(background=backgroundcolor)
+                os.remove("./files/light")
                 exitswitchmode()
                 returnmenu()
 
@@ -174,6 +182,7 @@ def menu():
                 backgroundcolor = 'white'
                 textcolor = "black"
                 window.configure(background=backgroundcolor)
+                open("./files/light", "w+")
                 exitswitchmode()
                 returnmenu()
 
@@ -189,7 +198,7 @@ def menu():
                               command=lightmodechoice, bg=backgroundcolor, anchor="center")
             lightmode_window = newindow.create_window(1000, 300, anchor=S, window=lightmode)
 
-        returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg=textcolor, command=returnmenu, bg="orange")
+        returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white", command=returnmenu, bg="orange")
         returnbutton.grid(row=1, column=0, columnspan=1, sticky='EWNS')
 
         colormode_settings = Button(window, bd=2, highlightthickness=0, text="Switch Dark/Light mode", font=playfont, fg=textcolor,
