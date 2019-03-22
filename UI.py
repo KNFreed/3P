@@ -88,7 +88,6 @@ def menu():
     greybackground_path = str(greypath + random_background)
     background = ImageTk.PhotoImage(master=window, file=background_path)
     greybackground = ImageTk.PhotoImage(master=window, file=greybackground_path)
-    arrow = ImageTk.PhotoImage(master=window, file="./files/return_arrow2.png")
     # Define the playbutton
     playbutton = Button(window, image=background, bd=0, highlightthickness=0, text="Play", font=playfont, fg="white", command=menu)
     playbutton.grid(row=1, column=0, columnspan=2, sticky='EWNS')
@@ -115,14 +114,8 @@ def menu():
 
     ### Newsbutton
 
-    def news():
-        # Destroy all the buttons that existed
-        destroymenu()
-
-        # Display the RSS Feed
-
     # Define the newsbutton
-    newsbutton = Button(window, bg="#60d26f", bd=0, highlightthickness=0, text="News", font=playfont,fg="white", command=news)
+    newsbutton = Button(window, bg="#60d26f", bd=0, highlightthickness=0, text="News", font=playfont,fg="white", command=destroymenu)
     newsbutton.grid(row=2, column=0, columnspan=1, sticky='EWNS')
     # Hover function
     def newsbuttonhover(e):
@@ -173,7 +166,8 @@ def menu():
                 backgroundcolor = '#696969'
                 textcolor = "white"
                 window.configure(background=backgroundcolor)
-                os.remove("./files/light")
+                if light:
+                    os.remove("./files/light")
                 exitswitchmode()
                 returnmenu()
 
