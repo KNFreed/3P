@@ -1,5 +1,5 @@
 # 3P!: An Open Source Console working on Raspberry
-![logo](https://github.com/KNFreed/3P.github.io/raw/master/img/logo.png)
+![logo](https://raw.githubusercontent.com/KNFreed/3Ps-Stuff/master/logo.png)
 
 # How to install the 3P!
 
