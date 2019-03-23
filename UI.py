@@ -39,8 +39,8 @@ if light:
     infobarbackground = "#4f4f4f"
     window.configure(background=backgroundcolor)
 else:
-    backgroundcolor = '#696969'
-    infobarbackground = "#4f4f4f"
+    backgroundcolor = '#464d59'
+    infobarbackground = "#464d59"
     textcolor = "white"
     window.configure(background=backgroundcolor)
 
@@ -162,7 +162,7 @@ def menu():
 
             def darkmodechoice():
                 global backgroundcolor, textcolor
-                backgroundcolor = '#696969'
+                backgroundcolor = '#464d59'
                 textcolor = "white"
                 window.configure(background=backgroundcolor)
                 if light:
