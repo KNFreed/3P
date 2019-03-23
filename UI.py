@@ -199,6 +199,11 @@ def menu():
                               command=switchmode, bg=backgroundcolor, anchor="w")
         colormode_settings.grid(row=2, column=0, columnspan=3, sticky='EWNS')
 
+        def exitprog():
+            sys.exit()
+        exitprog_settings = Button(window, bd=2, highlightthickness=0, text="Exit Prog", font=playfont, fg=textcolor, command=exitprog, bg=backgroundcolor, anchor="w")
+        exitprog_settings.grid(row=6, column=2, columnspan=1, sticky='EWNS')
+
     settingsbutton = Button(window, bg="#ffbe4d", bd=0, highlightthickness=0, text="Settings", font=playfont, fg="white", command=settings)
     settingsbutton.grid(row=2, column=1, columnspan=1, sticky='EWNS')
 
