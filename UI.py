@@ -18,7 +18,7 @@ window.geometry("1200x600")
 #Clock variables
 time1 = ''
 updatedhour='None'
-
+arrow = ImageTk.PhotoImage(master=window, file="./files/return_arrow2.png")
 
 ### Making a grid to place objects
 def configure():
@@ -30,7 +30,7 @@ def configure():
     window.columnconfigure(2,weight=1, uniform='third')
 configure()
 
-### Creating variables for the background color
+### Background color and images
 
 light = os.path.isfile('./files/light')
 if light:
@@ -45,7 +45,7 @@ else:
     window.configure(background=backgroundcolor)
 
 ### Creating the infobar
-canvas = Canvas(window, height=20, bg=infobarbackground, bd=0, highlightthickness=0)
+canvas = Canvas(window, height=30, bg=infobarbackground, bd=0, highlightthickness=0)
 canvas.grid(row=0, column=0, columnspan=3, sticky='EWNS')
 
 ### Creating the time widget
@@ -56,7 +56,7 @@ def tick():
         time1 = time2
         if updatedhour!='':
             canvas.delete(updatedhour)
-            updatedhour = canvas.create_text(30, 10, text=time1, font="Helvetica", fill="white")
+            updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill="white")
     window.after(1000, tick)
 tick()
 
@@ -66,7 +66,6 @@ def stop():
 ### UI
 def menu():
     configure()
-    canvas.grid(row=0, column=0, columnspan=6, sticky='EWNS')
     # Useful defs
     def destroymenu():
         playbutton.destroy()
@@ -139,9 +138,6 @@ def menu():
         window.rowconfigure(4, weight=1, uniform='fifth')
         window.rowconfigure(5, weight=1, uniform='fifth')
         window.rowconfigure(6, weight=1, uniform='fifth')
-        window.columnconfigure(0, weight=1)
-        window.columnconfigure(1, weight=1, uniform='sixth')
-        window.columnconfigure(2, weight=1, uniform='sixth')
         canvas.grid(row=0, column=0, columnspan=3, sticky='EWNS')
 
         # Title Canvas
@@ -153,11 +149,14 @@ def menu():
         def returnmenu():
             title_canvas.destroy()
             returnbutton.destroy()
+            exitprog_settings.destroy()
+            colormode_settings.destroy()
             menu()
 
         def switchmode():
             def exitswitchmode():
                 newindow.destroy()
+
             newindow = Canvas(window, bg=backgroundcolor, bd=0, highlightthickness=0)
             newindow.grid(row=1, column=0, columnspan=3, rowspan=7, sticky="EWNS")
 
@@ -192,7 +191,7 @@ def menu():
                               command=lightmodechoice, bg=backgroundcolor, anchor="center")
             lightmode_window = newindow.create_window(1000, 300, anchor=S, window=lightmode)
 
-        returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white", command=returnmenu, bg="orange")
+        returnbutton = Button(window, image=arrow, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white", command=returnmenu, bg="orange")
         returnbutton.grid(row=1, column=0, columnspan=1, sticky='EWNS')
 
         colormode_settings = Button(window, bd=2, highlightthickness=0, text="Switch Dark/Light mode", font=playfont, fg=textcolor,
