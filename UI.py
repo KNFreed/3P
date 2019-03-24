@@ -18,7 +18,6 @@ window.geometry("1200x600")
 #Clock variables
 time1 = ''
 updatedhour='None'
-arrow = ImageTk.PhotoImage(master=window, file="./files/return_arrow2.png")
 
 ### Making a grid to place objects
 def configure():
@@ -32,17 +31,47 @@ configure()
 
 ### Background color and images
 
-light = os.path.isfile('./files/light')
-if light:
+def lightmodeon():
+    global textcolor, backgroundcolor, infobarbackground, apps_hoverDI, appsDI, news_hoverDI, newsDI, play_hoverDI, playDI, settings_hoverDI, settingsDI, shutdown_hoverDI, shutdownDI
     backgroundcolor = 'white'
     textcolor = "black"
-    infobarbackground = "#4f4f4f"
+    infobarbackground = "#464d59"
     window.configure(background=backgroundcolor)
-else:
+    # Light Images
+    appsDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/apps.png")
+    newsDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/news.png")
+    playDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/play.png")
+    settingsDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/settings.png")
+    shutdownDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/shutdown.png")
+    apps_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/apps_hover.png")
+    news_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/news_hover.png")
+    play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/play_hover.png")
+    settings_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/settings_hover.png")
+    shutdown_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/shutdown_hover.png")
+
+def darkmodeon():
+    global textcolor, backgroundcolor, infobarbackground, apps_hoverDI, appsDI, news_hoverDI, newsDI, play_hoverDI, playDI, settings_hoverDI, settingsDI, shutdown_hoverDI, shutdownDI
     backgroundcolor = '#464d59'
     infobarbackground = "#464d59"
     textcolor = "white"
     window.configure(background=backgroundcolor)
+    # Dark Images
+    appsDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/apps.png")
+    newsDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/news.png")
+    playDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/play.png")
+    settingsDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/settings.png")
+    shutdownDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/shutdown.png")
+    apps_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/apps_hover.png")
+    news_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/news_hover.png")
+    play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/play_hover.png")
+    settings_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/settings_hover.png")
+    shutdown_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/shutdown_hover.png")
+
+light = os.path.isfile('./files/light')
+if light:
+    lightmodeon()
+else:
+    darkmodeon()
 
 ### Creating the infobar
 canvas = Canvas(window, height=30, bg=infobarbackground, bd=0, highlightthickness=0)
@@ -78,49 +107,53 @@ def menu():
     ### Playbutton
     #Selects random background for the PlayButtonn
     path = r"./games/background/"
-    greypath = r"./games/background/grey/"
-    random_background = random.choice([
-        x for x in os.listdir(path)
-        if os.path.isfile(os.path.join(path, x))
-    ])
-    background_path = str(path + random_background)
-    greybackground_path = str(greypath + random_background)
-    background = ImageTk.PhotoImage(master=window, file=background_path)
-    greybackground = ImageTk.PhotoImage(master=window, file=greybackground_path)
+    hoverpath = r"./games/background/Hover/"
+    nbackgrounds = os.path.isfile("./files/backgrounds")
+    playbackground = playDI
+    playhoverbackground = play_hoverDI
+    if nbackgrounds:
+        random_background = random.choice([
+            x for x in os.listdir(path)
+            if os.path.isfile(os.path.join(path, x))
+        ])
+        background_path = str(path + random_background)
+        hoverbackground_path = str(hoverpath + random_background)
+        playbackground = ImageTk.PhotoImage(master=window, file=background_path)
+        playhoverbackground = ImageTk.PhotoImage(master=window, file=hoverbackground_path)
     # Define the playbutton
-    playbutton = Button(window, image=background, bd=0, highlightthickness=0, text="Play", font=playfont, fg="white", command=menu)
+    playbutton = Button(window, image=playbackground, bd=0, highlightthickness=0, command=menu)
     playbutton.grid(row=1, column=0, columnspan=2, sticky='EWNS')
     # Hover function
     def playbuttonhover(e):
-        playbutton['image'] = greybackground
+        playbutton['image'] = playhoverbackground
     def playbuttonunhover(e):
-        playbutton['image'] = background
+        playbutton['image'] = playbackground
     playbutton.bind("<Enter>", playbuttonhover)
     playbutton.bind("<Leave>", playbuttonunhover)
 
     ### stopbutton
 
     # Define the stopbutton
-    stopbutton = Button(window, bg="#f57270", bd=0, highlightthickness=0, text="Power off", font=playfont, fg="white", command=stop)
+    stopbutton = Button(window, image=shutdownDI, bd=0, highlightthickness=0, command=stop)
     stopbutton.grid(row=2, column=2, columnspan=1, sticky='EWNS')
     # Hover function
     def stopbuttonhover(e):
-        stopbutton['bg'] = '#f02c28'
+        stopbutton['image'] = shutdown_hoverDI
     def stopbuttonunhover(e):
-        stopbutton['bg'] = '#f57270'
+        stopbutton['image'] = shutdownDI
     stopbutton.bind("<Enter>", stopbuttonhover)
     stopbutton.bind("<Leave>", stopbuttonunhover)
 
     ### Newsbutton
 
     # Define the newsbutton
-    newsbutton = Button(window, bg="#60d26f", bd=0, highlightthickness=0, text="News", font=playfont,fg="white", command=destroymenu)
+    newsbutton = Button(window, image=newsDI, bd=0, highlightthickness=0, command=destroymenu)
     newsbutton.grid(row=2, column=0, columnspan=1, sticky='EWNS')
     # Hover function
     def newsbuttonhover(e):
-        newsbutton['bg'] = '#2d9f3c'
+        newsbutton['image'] = news_hoverDI
     def newsbuttonunhover(e):
-        newsbutton['bg'] = '#60d26f'
+        newsbutton['image'] = newsDI
     newsbutton.bind("<Enter>", newsbuttonhover)
     newsbutton.bind("<Leave>", newsbuttonunhover)
 
@@ -161,20 +194,14 @@ def menu():
             newindow.grid(row=1, column=0, columnspan=3, rowspan=7, sticky="EWNS")
 
             def darkmodechoice():
-                global backgroundcolor, textcolor
-                backgroundcolor = '#464d59'
-                textcolor = "white"
-                window.configure(background=backgroundcolor)
+                darkmodeon()
                 if light:
                     os.remove("./files/light")
                 exitswitchmode()
                 returnmenu()
 
             def lightmodechoice():
-                global backgroundcolor, textcolor
-                backgroundcolor = 'white'
-                textcolor = "black"
-                window.configure(background=backgroundcolor)
+                lightmodeon()
                 open("./files/light", "w+")
                 exitswitchmode()
                 returnmenu()
@@ -191,7 +218,7 @@ def menu():
                               command=lightmodechoice, bg=backgroundcolor, anchor="center")
             lightmode_window = newindow.create_window(1000, 300, anchor=S, window=lightmode)
 
-        returnbutton = Button(window, image=arrow, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white", command=returnmenu, bg="orange")
+        returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white", command=returnmenu, bg="orange")
         returnbutton.grid(row=1, column=0, columnspan=1, sticky='EWNS')
 
         colormode_settings = Button(window, bd=2, highlightthickness=0, text="Switch Dark/Light mode", font=playfont, fg=textcolor,
@@ -203,27 +230,27 @@ def menu():
         exitprog_settings = Button(window, bd=2, highlightthickness=0, text="Exit Prog", font=playfont, fg=textcolor, command=exitprog, bg=backgroundcolor, anchor="w")
         exitprog_settings.grid(row=6, column=2, columnspan=1, sticky='EWNS')
 
-    settingsbutton = Button(window, bg="#ffbe4d", bd=0, highlightthickness=0, text="Settings", font=playfont, fg="white", command=settings)
+    settingsbutton = Button(window, image=settingsDI, bd=0, highlightthickness=0, command=settings)
     settingsbutton.grid(row=2, column=1, columnspan=1, sticky='EWNS')
 
     def settingsbuttonhover(e):
-        settingsbutton['bg'] = '#e69100'
+        settingsbutton['image'] = settings_hoverDI
 
     def settingsbuttonunhover(e):
-        settingsbutton['bg'] = '#ffbe4d'
+        settingsbutton['image'] = settingsDI
 
     settingsbutton.bind("<Enter>", settingsbuttonhover)
     settingsbutton.bind("<Leave>", settingsbuttonunhover)
 
     ### Appsbutton
-    appsbutton = Button(window, bg="#16e6e9", bd=0, highlightthickness=0, text="Apps", font=playfont, fg="white")
+    appsbutton = Button(window, image=appsDI, bd=0, highlightthickness=0)
     appsbutton.grid(row=1, column=2, columnspan=1, sticky='EWNS')
 
     def appsbuttonhover(e):
-        appsbutton['bg'] = '#10aeb0'
+        appsbutton['image'] = apps_hoverDI
 
     def appsbuttonunhover(e):
-        appsbutton['bg'] = '#16e6e9'
+        appsbutton['image'] = appsDI
 
     appsbutton.bind("<Enter>", appsbuttonhover)
     appsbutton.bind("<Leave>", appsbuttonunhover)
