@@ -30,24 +30,26 @@ def configure():
 configure()
 
 ### Background color and images
-
 def lightmodeon():
     global textcolor, backgroundcolor, infobarbackground, apps_hoverDI, appsDI, news_hoverDI, newsDI, play_hoverDI, playDI, settings_hoverDI, settingsDI, shutdown_hoverDI, shutdownDI
     backgroundcolor = 'white'
-    textcolor = "black"
-    infobarbackground = "#464d59"
+    textcolor = "#464d59"
+    infobarbackground = "white"
     window.configure(background=backgroundcolor)
     # Light Images
-    appsDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/apps.png")
-    newsDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/news.png")
-    playDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/play.png")
-    settingsDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/settings.png")
-    shutdownDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/shutdown.png")
-    apps_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/apps_hover.png")
-    news_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/news_hover.png")
-    play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/play_hover.png")
-    settings_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/settings_hover.png")
-    shutdown_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/shutdown_hover.png")
+    appsDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/apps.png")
+    newsDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/news.png")
+    playDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/play.png")
+    settingsDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/settings.png")
+    shutdownDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/shutdown.png")
+    apps_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/apps_hover.png")
+    news_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/news_hover.png")
+    settings_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/settings_hover.png")
+    shutdown_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/shutdown_hover.png")
+    if os.path.isfile('./files/easteregg'):
+        play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/play_hover_easteregg.png")
+    else:
+        play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/play_hover.png")
 
 def darkmodeon():
     global textcolor, backgroundcolor, infobarbackground, apps_hoverDI, appsDI, news_hoverDI, newsDI, play_hoverDI, playDI, settings_hoverDI, settingsDI, shutdown_hoverDI, shutdownDI
@@ -56,19 +58,21 @@ def darkmodeon():
     textcolor = "white"
     window.configure(background=backgroundcolor)
     # Dark Images
-    appsDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/apps.png")
-    newsDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/news.png")
-    playDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/play.png")
-    settingsDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/settings.png")
-    shutdownDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/shutdown.png")
-    apps_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/apps_hover.png")
-    news_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/news_hover.png")
-    play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/play_hover.png")
-    settings_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/settings_hover.png")
-    shutdown_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Buttons/Dark/Hover/shutdown_hover.png")
+    appsDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/apps.png")
+    newsDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/news.png")
+    playDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/play.png")
+    settingsDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/settings.png")
+    shutdownDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/shutdown.png")
+    apps_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/apps_hover.png")
+    news_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/news_hover.png")
+    settings_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/settings_hover.png")
+    shutdown_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/shutdown_hover.png")
+    if os.path.isfile('./files/easteregg'):
+        play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/play_hover_easteregg.png")
+    else:
+        play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/play_hover.png")
 
-light = os.path.isfile('./files/light')
-if light:
+if os.path.isfile('./files/light'):
     lightmodeon()
 else:
     darkmodeon()
@@ -85,7 +89,7 @@ def tick():
         time1 = time2
         if updatedhour!='':
             canvas.delete(updatedhour)
-            updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill="white")
+            updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
     window.after(1000, tick)
 tick()
 
@@ -109,8 +113,6 @@ def menu():
     path = r"./games/background/"
     hoverpath = r"./games/background/Hover/"
     nbackgrounds = os.path.isfile("./files/backgrounds")
-    playbackground = playDI
-    playhoverbackground = play_hoverDI
     if nbackgrounds:
         random_background = random.choice([
             x for x in os.listdir(path)
@@ -120,6 +122,9 @@ def menu():
         hoverbackground_path = str(hoverpath + random_background)
         playbackground = ImageTk.PhotoImage(master=window, file=background_path)
         playhoverbackground = ImageTk.PhotoImage(master=window, file=hoverbackground_path)
+    else:
+        playbackground = playDI
+        playhoverbackground = play_hoverDI
     # Define the playbutton
     playbutton = Button(window, image=playbackground, bd=0, highlightthickness=0, command=menu)
     playbutton.grid(row=1, column=0, columnspan=2, sticky='EWNS')
@@ -195,7 +200,7 @@ def menu():
 
             def darkmodechoice():
                 darkmodeon()
-                if light:
+                if os.path.isfile('./files/light'):
                     os.remove("./files/light")
                 exitswitchmode()
                 returnmenu()
@@ -205,6 +210,25 @@ def menu():
                 open("./files/light", "w+")
                 exitswitchmode()
                 returnmenu()
+
+            def eastereggchoice():
+                global play_hoverDI, eastereggon
+                if os.path.isfile('./files/easteregg'):
+                    os.remove("./files/easteregg")
+                    if os.path.isfile('./files/light'):
+                        play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                          file="./files/Menu/Light/Hover/play_hover.png")
+                    else:
+                        play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                          file="./files/Menu/Dark/Hover/play_hover.png")
+                    easteregg['text'] = "Easter Egg is off!"
+                else:
+                    open("./files/easteregg", "w+")
+                    if os.path.isfile('./files/light'):
+                        play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/play_hover_easteregg.png")
+                    else:
+                        play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/play_hover_easteregg.png")
+                    easteregg['text'] = "Easter Egg is on!"
 
             returntosettings = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg=textcolor,
                               command=exitswitchmode, bg=backgroundcolor, anchor="center")
@@ -217,6 +241,15 @@ def menu():
             lightmode = Button(window, bd=0, highlightthickness=0, text="Light Mode", font=playfont, fg=textcolor,
                               command=lightmodechoice, bg=backgroundcolor, anchor="center")
             lightmode_window = newindow.create_window(1000, 300, anchor=S, window=lightmode)
+
+            easteregg = Button(window, bd=0, highlightthickness=0, font=playfont, fg=textcolor,
+                               command=eastereggchoice, bg=backgroundcolor, anchor="center")
+            easteregg_window = newindow.create_window(600, 150, anchor=S, window=easteregg)
+
+            if os.path.isfile('./files/easteregg'):
+                easteregg['text'] = "Easter Egg is on!"
+            else:
+                easteregg['text'] = ""
 
         returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white", command=returnmenu, bg="orange")
         returnbutton.grid(row=1, column=0, columnspan=1, sticky='EWNS')
