@@ -12,8 +12,8 @@ window.title('3P! The Console')
 # Uncomment this one for a rasp install
 #window.attributes('-fullscreen', True)
 # Uncomment this one for a windows install
-window.geometry("1200x600")
-
+window.geometry("1024x600")
+logo = ImageTk.PhotoImage(master=window, file="./files/logo.png")
 ###Variables
 #Clock variables
 time1 = ''
@@ -99,6 +99,12 @@ tick()
 # Stops the Rpi
 def shutdown():
     os.system("sudo shutdown -h now")
+
+# Stocks version
+storeversion = open("./files/version", "r")
+storedversion = storeversion.readline()
+storedlastupdated = storeversion.readline()
+storeversion.close()
 
 ### UI
 def menu():
@@ -200,6 +206,7 @@ def menu():
             returnbutton.destroy()
             exitprog_settings.destroy()
             colormode_settings.destroy()
+            version_settings.destroy()
             menu()
 
         # Switch Dark/Light Button
@@ -258,20 +265,20 @@ def menu():
 
             # Choice buttons
             returntosettings = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg=textcolor,
-                              command=exitswitchmode, bg=backgroundcolor, anchor="center")
-            returntosettings_window = newindow.create_window(600, 580, anchor=S, window=returntosettings)
+                                      command=exitswitchmode, bg=backgroundcolor, anchor="center")
+            returntosettings_window = newindow.create_window(512, 580, anchor=S, window=returntosettings)
 
             darkmode = Button(window, bd=0, highlightthickness=0, text="Dark Mode", font=playfont, fg=textcolor,
-                                      command=darkmodechoice, bg=backgroundcolor, anchor="center")
-            darkmode_window = newindow.create_window(200, 300, anchor=S, window=darkmode)
+                              command=darkmodechoice, bg=backgroundcolor, anchor="center")
+            darkmode_window = newindow.create_window(200, 350, anchor=S, window=darkmode)
 
             lightmode = Button(window, bd=0, highlightthickness=0, text="Light Mode", font=playfont, fg=textcolor,
-                              command=lightmodechoice, bg=backgroundcolor, anchor="center")
-            lightmode_window = newindow.create_window(1000, 300, anchor=S, window=lightmode)
+                               command=lightmodechoice, bg=backgroundcolor, anchor="center")
+            lightmode_window = newindow.create_window(800, 350, anchor=S, window=lightmode)
 
             easteregg = Button(window, bd=0, highlightthickness=0, font=playfont, fg=textcolor,
                                command=eastereggchoice, bg=backgroundcolor, anchor="center")
-            easteregg_window = newindow.create_window(600, 150, anchor=S, window=easteregg)
+            easteregg_window = newindow.create_window(512, 150, anchor=S, window=easteregg)
 
             # Check if the Easter Egg is enabled when clicking on the Switcher
             if os.path.isfile('./files/easteregg'):
@@ -279,13 +286,34 @@ def menu():
             else:
                 easteregg['text'] = ""
 
+        def versionsettings():
+            def exitversionsettings():
+                newindow.destroy()
+            # Create a blank space
+            newindow = Canvas(window, bg=backgroundcolor, bd=0, highlightthickness=0)
+            newindow.grid(row=1, column=0, columnspan=3, rowspan=7, sticky="EWNS")
+
+            # Buttons
+            returntosettings = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg=textcolor,
+                                      command=exitversionsettings, bg=backgroundcolor, anchor="center")
+            returntosettings_window = newindow.create_window(512, 580, anchor=S, window=returntosettings)
+
+            newindow.create_image(512, 150, image=logo, anchor=CENTER)
+            newindow.create_text(512,350, font=(playfont, 20), text=storedversion, fill="white")
+            newindow.create_text(512, 400, font=(playfont, 20), text=storedlastupdated, fill="white")
+
         # Switcher Buttons
         returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white", command=returnmenu, bg="orange")
         returnbutton.grid(row=1, column=0, columnspan=1, sticky='EWNS')
 
         colormode_settings = Button(window, bd=2, highlightthickness=0, text="Switch Dark/Light mode", font=playfont, fg=textcolor,
-                              command=switchmode, bg=backgroundcolor, anchor="w")
+                                    command=switchmode, bg=backgroundcolor, anchor="w")
         colormode_settings.grid(row=2, column=0, columnspan=3, sticky='EWNS')
+
+        version_settings = Button(window, bd=2, highlightthickness=0, text="About the console", font=playfont,
+                                    fg=textcolor,
+                                    command=versionsettings, bg=backgroundcolor, anchor="w")
+        version_settings.grid(row=3, column=0, columnspan=3, sticky='EWNS')
 
         # Button to exit prog without shutting down the Rpi
         def exitprog():
