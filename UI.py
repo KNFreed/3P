@@ -114,6 +114,38 @@ def menu():
 
     ### Newsbutton
 
+    def news():
+        # Destroy all the buttons that existed
+        destroymenu()
+
+        # configure the grid
+        window.rowconfigure(0, weight=0)
+        window.rowconfigure(1, weight=1, uniform='fifth')
+        window.rowconfigure(2, weight=1, uniform='fifth')
+        window.rowconfigure(3, weight=1, uniform='fifth')
+        window.rowconfigure(4, weight=1, uniform='fifth')
+        window.rowconfigure(5, weight=1, uniform='fifth')
+        window.rowconfigure(6, weight=1, uniform='fifth')
+        canvas.grid(row=0, column=0, columnspan=3, sticky='EWNS')
+
+        # configure the interface
+        frm = Frame(root)
+        b1 = Button(frm, text='Un')
+        b1.grid(row=0, column=2, sticky='NS')
+        b2 = Button(frm, text='Deux')
+        b2.grid(row=0, column=1, sticky='EW')
+        b3 = Button(frm, text='Trois')
+        b3.grid(row=0, column=1, sticky='EW')
+
+        reqw = 0
+        for widget in frm.grid_slaves():
+            if widget.winfo_reqwidth() > reqw:
+                reqw = widget.winfo_reqwidth()
+        frm.grid(sticky=E + W)
+
+        for r in range(frm.grid_size()[0]):
+            frm.columnconfigure(r, minsize=reqw)
+
     # Define the newsbutton
     newsbutton = Button(window, bg="#60d26f", bd=0, highlightthickness=0, text="News", font=playfont,fg="white", command=destroymenu)
     newsbutton.grid(row=2, column=0, columnspan=1, sticky='EWNS')
