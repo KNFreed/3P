@@ -299,10 +299,10 @@ def menu():
             returntosettings_window = newindow.create_window(512, 580, anchor=S, window=returntosettings)
 
             newindow.create_image(512, 150, image=logo, anchor=CENTER)
-            newindow.create_text(512,350, font=(playfont, 20), text=storedversion, fill="white")
-            newindow.create_text(512, 400, font=(playfont, 20), text=storedlastupdated, fill="white")
+            newindow.create_text(512,350, font=(playfont, 20), text=storedversion, fill=textcolor)
+            newindow.create_text(512, 400, font=(playfont, 20), text=storedlastupdated, fill=textcolor)
 
-        # Switcher Buttons
+        # Buttons
         returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white", command=returnmenu, bg="orange")
         returnbutton.grid(row=1, column=0, columnspan=1, sticky='EWNS')
 
@@ -332,7 +332,37 @@ def menu():
     settingsbutton.bind("<Leave>", settingsbuttonunhover)
 
     ### Appsbutton
-    appsbutton = Button(window, image=appsDI, relief=RIDGE, bd=0, highlightthickness=0)
+
+    def apps():
+        # Destroy all the buttons that existed
+        destroymenu()
+
+        # configure the grid
+        window.rowconfigure(0, weight=0)
+        window.rowconfigure(1, weight=1, uniform='fifth')
+        window.rowconfigure(2, weight=1, uniform='fifth')
+        window.rowconfigure(3, weight=1, uniform='fifth')
+        window.rowconfigure(4, weight=1, uniform='fifth')
+        window.rowconfigure(5, weight=1, uniform='fifth')
+        window.rowconfigure(6, weight=1, uniform='fifth')
+        canvas.grid(row=0, column=0, columnspan=3, sticky='EWNS')
+
+        # Title Canvas
+        title_canvas = Canvas(window, bg="#ffbe4d", bd=0, highlightthickness=0)
+        title_canvas.create_text(400, 47.5, font=(playfont, 35), text="Apps", fill="white")
+        title_canvas.grid(row=1, column=1, columnspan=2, sticky='EWNS')
+
+        # Return button
+        def returnmenu():
+            title_canvas.destroy()
+            returnbutton.destroy()
+            menu()
+
+        returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white",
+                              command=returnmenu, bg="orange")
+        returnbutton.grid(row=1, column=0, columnspan=1, sticky='EWNS')
+
+    appsbutton = Button(window, image=appsDI, relief=RIDGE, bd=0, highlightthickness=0, command=apps)
     appsbutton.grid(row=1, column=2, columnspan=1, sticky='EWNS')
     def appsbuttonhover(e):
         appsbutton['image'] = apps_hoverDI
