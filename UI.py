@@ -1,7 +1,7 @@
 #imports
 from tkinter import *
 from tkinter import font
-import random, os, time, sys
+import random, os, time, sys, sqlite3
 from PIL import ImageTk
 
 
@@ -14,6 +14,9 @@ window.title('3P! The Console')
 # Uncomment this one for a windows install
 window.geometry("1024x600")
 logo = ImageTk.PhotoImage(master=window, file="./files/logo.png")
+backgroundcolor = '#464d59'
+infobarbackground = "#464d59"
+textcolor = "white"
 ###Variables
 #Clock variables
 time1 = ''
@@ -46,11 +49,6 @@ def lightmodeon():
     news_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/news_hover.png")
     settings_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/settings_hover.png")
     shutdown_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/shutdown_hover.png")
-    # Check if the Easter Egg is set on
-    if os.path.isfile('./files/easteregg'):
-        play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/play_hover_easteregg.png")
-    else:
-        play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/play_hover.png")
 
 def darkmodeon():
     global textcolor, backgroundcolor, infobarbackground, apps_hoverDI, appsDI, news_hoverDI, newsDI, play_hoverDI, playDI, settings_hoverDI, settingsDI, shutdown_hoverDI, shutdownDI
@@ -68,17 +66,7 @@ def darkmodeon():
     news_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/news_hover.png")
     settings_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/settings_hover.png")
     shutdown_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/shutdown_hover.png")
-    # Check if the Easter Egg is set on
-    if os.path.isfile('./files/easteregg'):
-        play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/play_hover_easteregg.png")
-    else:
-        play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/play_hover.png")
 
-# Check what mode is enabled
-if os.path.isfile('./files/light'):
-    lightmodeon()
-else:
-    darkmodeon()
 
 ### Creating the infobar
 canvas = Canvas(window, height=30, bg=infobarbackground, bd=0, highlightthickness=0)
@@ -106,9 +94,220 @@ storedversion = storeversion.readline()
 storedlastupdated = storeversion.readline()
 storeversion.close()
 
+### Login/Signup
+def login():
+    global curs,conn
+    if os.path.isfile('./files/account.db'):
+        ### Create a Login/Register Page
+        signinup = Canvas(window, bg=backgroundcolor, bd=0, highlightthickness=0)
+        signinup.grid(row=1, column=0, columnspan=3, rowspan=7, sticky="EWNS")
+        conn = sqlite3.connect("./files/account.db")
+        curs = conn.cursor()
+        curs.execute("Select * from Accounts where kmli = 1")
+        kmlicheck = curs.fetchone()
+
+        def newaccount():
+            signinbutton.destroy()
+            newaccountbutton.destroy()
+            try:
+                if nicknamerror:
+                    signinup.delete(nicknamerror)
+            except:
+                pass
+            try:
+                if passworderror:
+                    signinup.delete(passworderror)
+            except:
+                pass
+            def goback():
+                signinup.destroy()
+                login()
+            def newacc():
+                global play_hoverDI
+                nick = nickinput.get()
+                pwd = pwdinput.get()
+                kmli = kmliinput.get()
+                curs.execute("Select * from Accounts where nickname = ?", (nick,))
+                nickcheck = curs.fetchone()
+                if nickcheck == None:
+
+                    if nick != "" and pwd != "":
+                        newaccount = [(nick, pwd, kmli, 0, 0, 0)]
+                        curs.execute("INSERT INTO Accounts VALUES(?,?,?,?,?,?)", newaccount[0])
+                        conn.commit()
+                        darkmodeon()
+                        play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                          file="./files/Menu/Dark/Hover/play_hover.png")
+                        signinup.destroy()
+                        menu(nick)
+                    else:
+                        error = signinup.create_text(512, 370, text="Please enter a nickname and a password.",
+                                                     font=("Helvetica", 10), fill="red")
+
+                else:
+                    nicknamerror = signinup.create_text(512, 320, text="Username already exists. please try again.",
+                                                        font=("Helvetica", 10), fill="red")
+
+            # signinin Button
+            signupbutton = Button(window, bd=0, highlightthickness=0, text="Sign up", fg=textcolor, bg=backgroundcolor,
+                                  anchor="center", command=newacc)
+            signupbutton_window = signinup.create_window(512, 480, anchor=S, window=signupbutton)
+
+            # new account Button
+            gobackbutton = Button(window, bd=0, highlightthickness=0, text="Already have an account ?", fg=textcolor,
+                                      bg=backgroundcolor,
+                                      anchor="center", command=goback)
+            gobackbutton_window = signinup.create_window(512, 500, anchor=S, window=gobackbutton)
+
+        def signin():
+            global updatedhour, play_hoverDI, passworderror
+            nick = nickinput.get()
+            pwd = pwdinput.get()
+            kmli = kmliinput.get()
+            curs.execute("Select * from Accounts where nickname = ?", (nick,))
+            check1 = curs.fetchone()
+            if check1 == None:
+                global nicknamerror
+                nicknamerror = signinup.create_text(512, 320, text="This user doesn't exist", font=("Helvetica", 10), fill="red")
+            else:
+                try:
+                    if nicknamerror:
+                        signinup.delete(nicknamerror)
+                except:
+                    pass
+                curs.execute("Select * from Accounts where password = ? and nickname = ?", (pwd,nick))
+                check2 = curs.fetchone()
+                if check2 == None:
+                    passworderror = signinup.create_text(512, 370, text="Wrong password. Please Try again.",
+                                                        font=("Helvetica", 10), fill="red")
+                else:
+                    signinup.destroy()
+                    curs.execute("Update Accounts SET kmli = ? WHERE nickname = ?", (kmli,nick))
+                    conn.commit()
+                    # Check what mode is enabled
+                    curs.execute("Select * from Accounts where light = 1 and nickname = ?", (nick,))
+                    checklightmode = curs.fetchone()
+
+                    if checklightmode:
+                        lightmodeon()
+                        curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
+                        checkeasteregg = curs.fetchone()
+                        if checkeasteregg:
+                            play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                              file="./files/Menu/Light/Hover/play_hover_easteregg.png")
+                        else:
+                            play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                              file="./files/Menu/Light/Hover/play_hover.png")
+                        canvas['bg'] = infobarbackground
+                        canvas.delete(updatedhour)
+                        updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
+                    else:
+                        darkmodeon()
+                        curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
+                        checkeasteregg = curs.fetchone()
+                        if checkeasteregg:
+                            play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                              file="./files/Menu/Dark/Hover/play_hover_easteregg.png")
+                        else:
+                            play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                              file="./files/Menu/Dark/Hover/play_hover.png")
+                        canvas['bg'] = infobarbackground
+                        canvas.delete(updatedhour)
+                        updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
+                    signinup.destroy()
+                    menu(nick)
+        if kmlicheck:
+            curs.execute("Select nickname from Accounts where kmli = 1")
+            nick = curs.fetchone()
+            menu(nick[0])
+        else:
+            # signinin Button
+            signinbutton = Button(window, bd=0, highlightthickness=0, text="Sign in", fg=textcolor, bg=backgroundcolor,
+                                  anchor="center", command=signin)
+            signinbutton_window = signinup.create_window(512, 480, anchor=S, window=signinbutton)
+
+            # new account Button
+            newaccountbutton = Button(window, bd=0, highlightthickness=0, text="Create a New account", fg=textcolor, bg=backgroundcolor,
+                                  anchor="center", command=newaccount)
+            newaccountbutton_window = signinup.create_window(512, 500, anchor=S, window=newaccountbutton)
+
+            # logo input
+            signinup.create_image(512, 150, image=logo, anchor=CENTER)
+
+            # Nick input
+            nickinput = Entry(window)
+            nickinput.insert(0, 'Nickname')
+            nickinput_window = signinup.create_window(512, 350, anchor=S, window=nickinput)
+
+            # Pwd input
+            pwdinput = Entry(window)
+            pwdinput.insert(0, 'Password')
+            pwdinput_window = signinup.create_window(512, 400, anchor=S, window=pwdinput)
+
+            kmliinput = IntVar()
+            f = Frame(signinup)
+            signinup.create_window((512, 420), window=f, anchor="n")
+            Checkbutton(f, text="Keep me logged in", variable=kmliinput).pack()
+
+
+    else:
+        ### Create a Register Page
+
+        def signup():
+            global play_hoverDI, curs, conn
+            nick = nickinput.get()
+            pwd = pwdinput.get()
+            kmli = kmliinput.get()
+            conn = sqlite3.connect("./files/account.db")
+            curs = conn.cursor()
+            if nick !="" and pwd !="":
+                curs.execute("CREATE TABLE Accounts(nickname TEXT,password TEXT,kmli INTEGER,light INTEGER,easteregg INTEGER,admin INTEGER)")
+                newaccount=[(nick,pwd,kmli,0,0,1)]
+                curs.execute("INSERT INTO Accounts VALUES(?,?,?,?,?,?)",newaccount[0])
+                conn.commit()
+                darkmodeon()
+                play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                  file="./files/Menu/Dark/Hover/play_hover.png")
+                register.destroy()
+                menu(nick)
+            else:
+                error = register.create_text(512, 370, text="Please enter a nickname and a password.",
+                                                     font=("Helvetica", 10), fill="red")
+
+        # Canvas
+        register = Canvas(window, bg=backgroundcolor, bd=0, highlightthickness=0)
+        register.grid(row=1, column=0, columnspan=3, rowspan=7, sticky="EWNS")
+
+        # register Button
+        registerbutton = Button(window, bd=0, highlightthickness=0, text="Sign Up", fg=textcolor, bg=backgroundcolor, anchor="center", command=signup)
+        registerbutton_window = register.create_window(512, 480, anchor=S, window=registerbutton)
+
+        # logo input
+        register.create_image(512, 150, image=logo, anchor=CENTER)
+
+        # Nick input
+        nickinput = Entry(window)
+        nickinput.insert(0, 'Nickname')
+        nickinput_window = register.create_window(512, 350, anchor=S, window=nickinput)
+
+        # Pwd input
+        pwdinput = Entry(window)
+        pwdinput.insert(0, 'Password')
+        pwdinput_window = register.create_window(512, 400, anchor=S, window=pwdinput)
+
+        kmliinput = IntVar()
+        f = Frame(register)
+        register.create_window((512, 420), window=f, anchor="n")
+        Checkbutton(f, text="Keep me logged in", variable=kmliinput).pack()
+        message = register.create_text(512, 320, text="This will be the Admin account", font=("Helvetica", 10),
+                                            fill=textcolor)
+
+
 ### UI
-def menu():
+def menu(nick):
     configure()
+    welcome = "Welcome {}!".format(nick)
+    welcometext = canvas.create_text(512, 15, text=welcome, font=("Helvetica", 15), fill=textcolor)
     ### Useful defs
 
     # Remove every button from the menu to leave a blank space for the next page
@@ -207,7 +406,8 @@ def menu():
             exitprog_settings.destroy()
             colormode_settings.destroy()
             version_settings.destroy()
-            menu()
+            changepassword_settings.destroy()
+            menu(nick)
 
         # Switch Dark/Light Button
         def switchmode():
@@ -219,26 +419,44 @@ def menu():
 
             # Put everything into Dark Mode
             def darkmodechoice():
-                global updatedhour
+                global updatedhour, play_hoverDI
                 darkmodeon()
-                # Delete the light file if there is one to put the Dark Mode
-                if os.path.isfile('./files/light'):
-                    os.remove("./files/light")
+                # Edit database to put the Dark Mode
+                curs.execute("Update Accounts SET light = 0 WHERE nickname = ?", (nick,))
+                conn.commit()
                 canvas['bg'] = infobarbackground
                 canvas.delete(updatedhour)
                 updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
+                curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
+                checkeasteregg = curs.fetchone()
+                if checkeasteregg:
+                    play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                      file="./files/Menu/Dark/Hover/play_hover_easteregg.png")
+                else:
+                    play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                      file="./files/Menu/Dark/Hover/play_hover.png")
                 exitswitchmode()
                 returnmenu()
 
             # Put everything into Light Mode
             def lightmodechoice():
-                global updatedhour
+                global updatedhour, play_hoverDI
                 lightmodeon()
                 canvas['bg'] = infobarbackground
-                # Create a file to ensure the light mode will stay even after a reboot
-                open("./files/light", "w+")
+                # Edit database to ensure the light mode will stay even after a reboot
+                curs.execute("Update Accounts SET light = 1 WHERE nickname = ?", (nick,))
+                conn.commit()
                 canvas.delete(updatedhour)
                 updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
+                curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
+                checkeasteregg = curs.fetchone()
+                if checkeasteregg:
+                    play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                      file="./files/Menu/Light/Hover/play_hover_easteregg.png")
+                else:
+                    play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                      file="./files/Menu/Light/Hover/play_hover.png")
+
                 exitswitchmode()
                 returnmenu()
 
@@ -246,18 +464,28 @@ def menu():
             def eastereggchoice():
                 global play_hoverDI, eastereggon
                 # Checks if Easter Egg is already enabled. If N: enable it. Y: Disable it.
-                if os.path.isfile('./files/easteregg'):
-                    os.remove("./files/easteregg")
-                    if os.path.isfile('./files/light'):
+                curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
+                checkeasteregg = curs.fetchone()
+
+                if checkeasteregg:
+                    curs.execute("Update Accounts SET easteregg = 0 WHERE nickname = ?", (nick,))
+                    conn.commit()
+                    curs.execute("Select * from Accounts where light = 1 and nickname = ?", (nick,))
+                    checklightmode = curs.fetchone()
+                    if checklightmode:
                         play_hoverDI = ImageTk.PhotoImage(master=window,
-                                                          file="./files/Menu/Light/Hover/play_hover.png")
+                                                      file="./files/Menu/Light/Hover/play_hover.png")
                     else:
                         play_hoverDI = ImageTk.PhotoImage(master=window,
                                                           file="./files/Menu/Dark/Hover/play_hover.png")
                     easteregg['text'] = "Easter Egg is off!"
+
                 else:
-                    open("./files/easteregg", "w+")
-                    if os.path.isfile('./files/light'):
+                    curs.execute("Update Accounts SET easteregg = 1 WHERE nickname = ?", (nick,))
+                    conn.commit()
+                    curs.execute("Select * from Accounts where light = 1 and nickname = ?", (nick,))
+                    checklightmode = curs.fetchone()
+                    if checklightmode:
                         play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/play_hover_easteregg.png")
                     else:
                         play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/play_hover_easteregg.png")
@@ -281,7 +509,11 @@ def menu():
             easteregg_window = newindow.create_window(512, 150, anchor=S, window=easteregg)
 
             # Check if the Easter Egg is enabled when clicking on the Switcher
-            if os.path.isfile('./files/easteregg'):
+            curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
+            checkeasteregg = curs.fetchone()
+
+            # Si il est allumé
+            if checkeasteregg:
                 easteregg['text'] = "Easter Egg is on!"
             else:
                 easteregg['text'] = ""
@@ -301,6 +533,73 @@ def menu():
             newindow.create_image(512, 150, image=logo, anchor=CENTER)
             newindow.create_text(512,350, font=(playfont, 20), text=storedversion, fill=textcolor)
             newindow.create_text(512, 400, font=(playfont, 20), text=storedlastupdated, fill=textcolor)
+
+        def changepasswordsettings():
+            def exitchangepasswordsetting():
+                newindow.destroy()
+            # Create a blank space
+            newindow = Canvas(window, bg=backgroundcolor, bd=0, highlightthickness=0)
+            newindow.grid(row=1, column=0, columnspan=3, rowspan=7, sticky="EWNS")
+
+            def changepassword():
+                global checkerror, pwderror, pwdchanged
+                pwd = pwdinput.get()
+                cpwd = cpwdinput.get()
+                confirm = confirminput.get()
+                if pwd == cpwd:
+                    if confirm:
+                        curs.execute("Update Accounts SET password = ? WHERE nickname = ?", (pwd, nick))
+                        conn.commit()
+                        try:
+                            if checkerror:
+                                newindow.delete(checkerror)
+                        except:
+                            pass
+                        pwdchanged = newindow.create_text(512, 400,
+                                                          text="Password changed. You will be redirected to the menu shortly.",
+                                                          font=("Helvetica", 10), fill="red")
+                        window.after(2000, exitchangepasswordsetting)
+                    else:
+                        try:
+                            if pwderror:
+                                newindow.delete(pwderror)
+                        except:
+                            pass
+                        checkerror = newindow.create_text(512, 170, text="Please check the box before updating the password.",
+                                                             font=("Helvetica", 10), fill="red")
+                else:
+                    pwderror = newindow.create_text(512, 120,
+                                                      text="Passwords are different. Please try again.",
+                                                      font=("Helvetica", 10), fill="red")
+            # Buttons
+            returntosettings = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg=textcolor,
+                                      command=exitchangepasswordsetting, bg=backgroundcolor, anchor="center")
+            returntosettings_window = newindow.create_window(512, 580, anchor=S, window=returntosettings)
+
+            # Pwd input
+            pwdinput = Entry(window)
+            pwdinput.insert(0, 'Nickname')
+            pwdinput_window = newindow.create_window(512, 100, anchor=S, window=pwdinput)
+
+            # Pwd input
+            cpwdinput = Entry(window)
+            cpwdinput.insert(0, 'Password')
+            cpwdinput_window = newindow.create_window(512, 150, anchor=S, window=cpwdinput)
+
+            confirminput = IntVar()
+            f = Frame(newindow)
+            newindow.create_window((512, 200), window=f, anchor="n")
+            Checkbutton(f, text="Are you sure you want to change your password?", variable=confirminput).pack()
+
+            # Buttons
+            changepwd = Button(window, bd=0, highlightthickness=0, text="Change Password", font=playfont, fg=textcolor,
+                                      command=changepassword, bg=backgroundcolor, anchor="center")
+            changepwd_window = newindow.create_window(512, 350, anchor=S, window=changepwd)
+
+        changepassword_settings = Button(window, bd=2, highlightthickness=0, text="Change Password", font=playfont,
+                                  fg=textcolor,
+                                  command=changepasswordsettings, bg=backgroundcolor, anchor="w")
+        changepassword_settings.grid(row=4, column=0, columnspan=3, sticky='EWNS')
 
         # Buttons
         returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white", command=returnmenu, bg="orange")
@@ -356,7 +655,7 @@ def menu():
         def returnmenu():
             title_canvas.destroy()
             returnbutton.destroy()
-            menu()
+            menu(nick)
 
         returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white",
                               command=returnmenu, bg="orange")
@@ -371,5 +670,5 @@ def menu():
     appsbutton.bind("<Enter>", appsbuttonhover)
     appsbutton.bind("<Leave>", appsbuttonunhover)
 
-menu()
+login()
 window.mainloop()
