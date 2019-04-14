@@ -1,16 +1,15 @@
-#imports
+# imports
 from tkinter import *
 from tkinter import font
 import random, os, time, sys, sqlite3
 from PIL import ImageTk
-
 
 window = Tk()
 window.title('3P! The Console')
 
 ### Window size
 # Uncomment this one for a rasp install
-#window.attributes('-fullscreen', True)
+# window.attributes('-fullscreen', True)
 # Uncomment this one for a windows install
 window.geometry("1024x600")
 logo = ImageTk.PhotoImage(master=window, file="./files/logo.png")
@@ -18,23 +17,27 @@ backgroundcolor = '#464d59'
 infobarbackground = "#464d59"
 textcolor = "white"
 ###Variables
-#Clock variables
+# Clock variables
 time1 = ''
-updatedhour='None'
+updatedhour = 'None'
+
 
 ### Making a grid to place objects
 def configure():
-    window.rowconfigure(0,weight=0)
-    window.rowconfigure(1,weight=1, uniform='semi')
-    window.rowconfigure(2,weight=1, uniform='semi')
-    window.columnconfigure(0,weight=1, uniform='third')
-    window.columnconfigure(1,weight=1, uniform='third')
-    window.columnconfigure(2,weight=1, uniform='third')
+    window.rowconfigure(0, weight=0)
+    window.rowconfigure(1, weight=1, uniform='semi')
+    window.rowconfigure(2, weight=1, uniform='semi')
+    window.columnconfigure(0, weight=1, uniform='third')
+    window.columnconfigure(1, weight=1, uniform='third')
+    window.columnconfigure(2, weight=1, uniform='third')
+
+
 configure()
+
 
 ### Background color and images
 def lightmodeon():
-    global textcolor, backgroundcolor, infobarbackground, apps_hoverDI, appsDI, news_hoverDI, newsDI, play_hoverDI, playDI, settings_hoverDI, settingsDI, shutdown_hoverDI, shutdownDI
+    global textcolor, backgroundcolor, infobarbackground, apps_hoverDI, appsDI, news_hoverDI, newsDI, playDI, settings_hoverDI, settingsDI, shutdown_hoverDI, shutdownDI
     backgroundcolor = 'white'
     textcolor = "#464d59"
     infobarbackground = "white"
@@ -50,8 +53,9 @@ def lightmodeon():
     settings_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/settings_hover.png")
     shutdown_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/shutdown_hover.png")
 
+
 def darkmodeon():
-    global textcolor, backgroundcolor, infobarbackground, apps_hoverDI, appsDI, news_hoverDI, newsDI, play_hoverDI, playDI, settings_hoverDI, settingsDI, shutdown_hoverDI, shutdownDI
+    global textcolor, backgroundcolor, infobarbackground, apps_hoverDI, appsDI, news_hoverDI, newsDI, playDI, settings_hoverDI, settingsDI, shutdown_hoverDI, shutdownDI
     backgroundcolor = '#464d59'
     infobarbackground = "#464d59"
     textcolor = "white"
@@ -72,21 +76,26 @@ def darkmodeon():
 canvas = Canvas(window, height=30, bg=infobarbackground, bd=0, highlightthickness=0)
 canvas.grid(row=0, column=0, columnspan=3, sticky='EWNS')
 
+
 ### Creating the time widget
 def tick():
-    global time1, hour, updatedhour
+    global time1, updatedhour
     time2 = time.strftime('%H:%M')
     if time2 != time1:
         time1 = time2
-        if updatedhour!='':
+        if updatedhour != '':
             canvas.delete(updatedhour)
             updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
     window.after(1000, tick)
+
+
 tick()
+
 
 # Stops the Rpi
 def shutdown():
     os.system("sudo shutdown -h now")
+
 
 # Stocks version
 storeversion = open("./files/version", "r")
@@ -94,9 +103,10 @@ storedversion = storeversion.readline()
 storedlastupdated = storeversion.readline()
 storeversion.close()
 
+
 ### Login/Signup
 def login():
-    global curs,conn
+    global curs, conn
     if os.path.isfile('./files/account.db'):
         ### Create a Login/Register Page
         signinup = Canvas(window, bg=backgroundcolor, bd=0, highlightthickness=0)
@@ -119,9 +129,11 @@ def login():
                     signinup.delete(passworderror)
             except:
                 pass
+
             def goback():
                 signinup.destroy()
                 login()
+
             def newacc():
                 global play_hoverDI
                 nick = nickinput.get()
@@ -129,7 +141,7 @@ def login():
                 kmli = kmliinput.get()
                 curs.execute("Select * from Accounts where nickname = ?", (nick,))
                 nickcheck = curs.fetchone()
-                if nickcheck == None:
+                if nickcheck is None:
 
                     if nick != "" and pwd != "":
                         newaccount = [(nick, pwd, kmli, 0, 0, 0)]
@@ -155,8 +167,8 @@ def login():
 
             # new account Button
             gobackbutton = Button(window, bd=0, highlightthickness=0, text="Already have an account ?", fg=textcolor,
-                                      bg=backgroundcolor,
-                                      anchor="center", command=goback)
+                                  bg=backgroundcolor,
+                                  anchor="center", command=goback)
             gobackbutton_window = signinup.create_window(512, 500, anchor=S, window=gobackbutton)
 
         def signin():
@@ -166,23 +178,24 @@ def login():
             kmli = kmliinput.get()
             curs.execute("Select * from Accounts where nickname = ?", (nick,))
             check1 = curs.fetchone()
-            if check1 == None:
+            if check1 is None:
                 global nicknamerror
-                nicknamerror = signinup.create_text(512, 320, text="This user doesn't exist", font=("Helvetica", 10), fill="red")
+                nicknamerror = signinup.create_text(512, 320, text="This user doesn't exist", font=("Helvetica", 10),
+                                                    fill="red")
             else:
                 try:
                     if nicknamerror:
                         signinup.delete(nicknamerror)
                 except:
                     pass
-                curs.execute("Select * from Accounts where password = ? and nickname = ?", (pwd,nick))
+                curs.execute("Select * from Accounts where password = ? and nickname = ?", (pwd, nick))
                 check2 = curs.fetchone()
-                if check2 == None:
+                if check2 is None:
                     passworderror = signinup.create_text(512, 370, text="Wrong password. Please Try again.",
-                                                        font=("Helvetica", 10), fill="red")
+                                                         font=("Helvetica", 10), fill="red")
                 else:
                     signinup.destroy()
-                    curs.execute("Update Accounts SET kmli = ? WHERE nickname = ?", (kmli,nick))
+                    curs.execute("Update Accounts SET kmli = ? WHERE nickname = ?", (kmli, nick))
                     conn.commit()
                     # Check what mode is enabled
                     curs.execute("Select * from Accounts where light = 1 and nickname = ?", (nick,))
@@ -216,6 +229,7 @@ def login():
                         updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
                     signinup.destroy()
                     menu(nick)
+
         if kmlicheck:
             curs.execute("Select nickname from Accounts where kmli = 1")
             nick = curs.fetchone()
@@ -227,8 +241,9 @@ def login():
             signinbutton_window = signinup.create_window(512, 480, anchor=S, window=signinbutton)
 
             # new account Button
-            newaccountbutton = Button(window, bd=0, highlightthickness=0, text="Create a New account", fg=textcolor, bg=backgroundcolor,
-                                  anchor="center", command=newaccount)
+            newaccountbutton = Button(window, bd=0, highlightthickness=0, text="Create a New account", fg=textcolor,
+                                      bg=backgroundcolor,
+                                      anchor="center", command=newaccount)
             newaccountbutton_window = signinup.create_window(512, 500, anchor=S, window=newaccountbutton)
 
             # logo input
@@ -260,10 +275,11 @@ def login():
             kmli = kmliinput.get()
             conn = sqlite3.connect("./files/account.db")
             curs = conn.cursor()
-            if nick !="" and pwd !="":
-                curs.execute("CREATE TABLE Accounts(nickname TEXT,password TEXT,kmli INTEGER,light INTEGER,easteregg INTEGER,admin INTEGER)")
-                newaccount=[(nick,pwd,kmli,0,0,1)]
-                curs.execute("INSERT INTO Accounts VALUES(?,?,?,?,?,?)",newaccount[0])
+            if nick != "" and pwd != "":
+                curs.execute(
+                    "CREATE TABLE Accounts(nickname TEXT,password TEXT,kmli INTEGER,light INTEGER,easteregg INTEGER,admin INTEGER)")
+                newaccount = [(nick, pwd, kmli, 0, 0, 1)]
+                curs.execute("INSERT INTO Accounts VALUES(?,?,?,?,?,?)", newaccount[0])
                 conn.commit()
                 darkmodeon()
                 play_hoverDI = ImageTk.PhotoImage(master=window,
@@ -272,14 +288,15 @@ def login():
                 menu(nick)
             else:
                 error = register.create_text(512, 370, text="Please enter a nickname and a password.",
-                                                     font=("Helvetica", 10), fill="red")
+                                             font=("Helvetica", 10), fill="red")
 
         # Canvas
         register = Canvas(window, bg=backgroundcolor, bd=0, highlightthickness=0)
         register.grid(row=1, column=0, columnspan=3, rowspan=7, sticky="EWNS")
 
         # register Button
-        registerbutton = Button(window, bd=0, highlightthickness=0, text="Sign Up", fg=textcolor, bg=backgroundcolor, anchor="center", command=signup)
+        registerbutton = Button(window, bd=0, highlightthickness=0, text="Sign Up", fg=textcolor, bg=backgroundcolor,
+                                anchor="center", command=signup)
         registerbutton_window = register.create_window(512, 480, anchor=S, window=registerbutton)
 
         # logo input
@@ -300,7 +317,7 @@ def login():
         register.create_window((512, 420), window=f, anchor="n")
         Checkbutton(f, text="Keep me logged in", variable=kmliinput).pack()
         message = register.create_text(512, 320, text="This will be the Admin account", font=("Helvetica", 10),
-                                            fill=textcolor)
+                                       fill=textcolor)
 
 
 ### UI
@@ -308,6 +325,7 @@ def menu(nick):
     configure()
     welcome = "Welcome {}!".format(nick)
     welcometext = canvas.create_text(512, 15, text=welcome, font=("Helvetica", 15), fill=textcolor)
+
     ### Useful defs
 
     # Remove every button from the menu to leave a blank space for the next page
@@ -344,11 +362,14 @@ def menu(nick):
     # Define the playbutton
     playbutton = Button(window, image=playbackground, relief=SOLID, bd=0, highlightthickness=0)
     playbutton.grid(row=1, column=0, columnspan=2, sticky='EWNS')
+
     # Hover function
     def playbuttonhover(e):
         playbutton['image'] = playhoverbackground
+
     def playbuttonunhover(e):
         playbutton['image'] = playbackground
+
     playbutton.bind("<Enter>", playbuttonhover)
     playbutton.bind("<Leave>", playbuttonunhover)
 
@@ -357,11 +378,14 @@ def menu(nick):
     # Define the shutdownbutton
     shutdownbutton = Button(window, image=shutdownDI, bd=0, highlightthickness=0, command=shutdown, relief=FLAT)
     shutdownbutton.grid(row=2, column=2, columnspan=1, sticky='EWNS')
+
     # Hover function
     def shutdownbuttonhover(e):
         shutdownbutton['image'] = shutdown_hoverDI
+
     def shutdownbuttonunhover(e):
         shutdownbutton['image'] = shutdownDI
+
     shutdownbutton.bind("<Enter>", shutdownbuttonhover)
     shutdownbutton.bind("<Leave>", shutdownbuttonunhover)
 
@@ -370,11 +394,14 @@ def menu(nick):
     # Define the newsbutton
     newsbutton = Button(window, image=newsDI, bd=0, highlightthickness=0, command=destroymenu, relief=FLAT)
     newsbutton.grid(row=2, column=0, columnspan=1, sticky='EWNS')
+
     # Hover function
     def newsbuttonhover(e):
         newsbutton['image'] = news_hoverDI
+
     def newsbuttonunhover(e):
         newsbutton['image'] = newsDI
+
     newsbutton.bind("<Enter>", newsbuttonhover)
     newsbutton.bind("<Leave>", newsbuttonunhover)
 
@@ -384,7 +411,7 @@ def menu(nick):
         # Destroy all the buttons that existed
         destroymenu()
 
-        #configure the grid
+        # configure the grid
         window.rowconfigure(0, weight=0)
         window.rowconfigure(1, weight=1, uniform='fifth')
         window.rowconfigure(2, weight=1, uniform='fifth')
@@ -399,7 +426,7 @@ def menu(nick):
         title_canvas.create_text(400, 47.5, font=(playfont, 35), text="Settings", fill="white")
         title_canvas.grid(row=1, column=1, columnspan=2, sticky='EWNS')
 
-        #Return button
+        # Return button
         def returnmenu():
             title_canvas.destroy()
             returnbutton.destroy()
@@ -413,6 +440,7 @@ def menu(nick):
         def switchmode():
             def exitswitchmode():
                 newindow.destroy()
+
             # Create a blank space
             newindow = Canvas(window, bg=backgroundcolor, bd=0, highlightthickness=0)
             newindow.grid(row=1, column=0, columnspan=3, rowspan=7, sticky="EWNS")
@@ -462,7 +490,7 @@ def menu(nick):
 
             # Enables Easter Egg
             def eastereggchoice():
-                global play_hoverDI, eastereggon
+                global play_hoverDI
                 # Checks if Easter Egg is already enabled. If N: enable it. Y: Disable it.
                 curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
                 checkeasteregg = curs.fetchone()
@@ -474,7 +502,7 @@ def menu(nick):
                     checklightmode = curs.fetchone()
                     if checklightmode:
                         play_hoverDI = ImageTk.PhotoImage(master=window,
-                                                      file="./files/Menu/Light/Hover/play_hover.png")
+                                                          file="./files/Menu/Light/Hover/play_hover.png")
                     else:
                         play_hoverDI = ImageTk.PhotoImage(master=window,
                                                           file="./files/Menu/Dark/Hover/play_hover.png")
@@ -486,9 +514,11 @@ def menu(nick):
                     curs.execute("Select * from Accounts where light = 1 and nickname = ?", (nick,))
                     checklightmode = curs.fetchone()
                     if checklightmode:
-                        play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Light/Hover/play_hover_easteregg.png")
+                        play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                          file="./files/Menu/Light/Hover/play_hover_easteregg.png")
                     else:
-                        play_hoverDI = ImageTk.PhotoImage(master=window, file="./files/Menu/Dark/Hover/play_hover_easteregg.png")
+                        play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                          file="./files/Menu/Dark/Hover/play_hover_easteregg.png")
                     easteregg['text'] = "Easter Egg is on!"
 
             # Choice buttons
@@ -521,6 +551,7 @@ def menu(nick):
         def versionsettings():
             def exitversionsettings():
                 newindow.destroy()
+
             # Create a blank space
             newindow = Canvas(window, bg=backgroundcolor, bd=0, highlightthickness=0)
             newindow.grid(row=1, column=0, columnspan=3, rowspan=7, sticky="EWNS")
@@ -531,12 +562,13 @@ def menu(nick):
             returntosettings_window = newindow.create_window(512, 580, anchor=S, window=returntosettings)
 
             newindow.create_image(512, 150, image=logo, anchor=CENTER)
-            newindow.create_text(512,350, font=(playfont, 20), text=storedversion, fill=textcolor)
+            newindow.create_text(512, 350, font=(playfont, 20), text=storedversion, fill=textcolor)
             newindow.create_text(512, 400, font=(playfont, 20), text=storedlastupdated, fill=textcolor)
 
         def changepasswordsettings():
             def exitchangepasswordsetting():
                 newindow.destroy()
+
             # Create a blank space
             newindow = Canvas(window, bg=backgroundcolor, bd=0, highlightthickness=0)
             newindow.grid(row=1, column=0, columnspan=3, rowspan=7, sticky="EWNS")
@@ -565,12 +597,14 @@ def menu(nick):
                                 newindow.delete(pwderror)
                         except:
                             pass
-                        checkerror = newindow.create_text(512, 170, text="Please check the box before updating the password.",
-                                                             font=("Helvetica", 10), fill="red")
+                        checkerror = newindow.create_text(512, 170,
+                                                          text="Please check the box before updating the password.",
+                                                          font=("Helvetica", 10), fill="red")
                 else:
                     pwderror = newindow.create_text(512, 120,
-                                                      text="Passwords are different. Please try again.",
-                                                      font=("Helvetica", 10), fill="red")
+                                                    text="Passwords are different. Please try again.",
+                                                    font=("Helvetica", 10), fill="red")
+
             # Buttons
             returntosettings = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg=textcolor,
                                       command=exitchangepasswordsetting, bg=backgroundcolor, anchor="center")
@@ -593,40 +627,47 @@ def menu(nick):
 
             # Buttons
             changepwd = Button(window, bd=0, highlightthickness=0, text="Change Password", font=playfont, fg=textcolor,
-                                      command=changepassword, bg=backgroundcolor, anchor="center")
+                               command=changepassword, bg=backgroundcolor, anchor="center")
             changepwd_window = newindow.create_window(512, 350, anchor=S, window=changepwd)
 
         changepassword_settings = Button(window, bd=2, highlightthickness=0, text="Change Password", font=playfont,
-                                  fg=textcolor,
-                                  command=changepasswordsettings, bg=backgroundcolor, anchor="w")
+                                         fg=textcolor,
+                                         command=changepasswordsettings, bg=backgroundcolor, anchor="w")
         changepassword_settings.grid(row=4, column=0, columnspan=3, sticky='EWNS')
 
         # Buttons
-        returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white", command=returnmenu, bg="orange")
+        returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white",
+                              command=returnmenu, bg="orange")
         returnbutton.grid(row=1, column=0, columnspan=1, sticky='EWNS')
 
-        colormode_settings = Button(window, bd=2, highlightthickness=0, text="Switch Dark/Light mode", font=playfont, fg=textcolor,
+        colormode_settings = Button(window, bd=2, highlightthickness=0, text="Switch Dark/Light mode", font=playfont,
+                                    fg=textcolor,
                                     command=switchmode, bg=backgroundcolor, anchor="w")
         colormode_settings.grid(row=2, column=0, columnspan=3, sticky='EWNS')
 
         version_settings = Button(window, bd=2, highlightthickness=0, text="About the console", font=playfont,
-                                    fg=textcolor,
-                                    command=versionsettings, bg=backgroundcolor, anchor="w")
+                                  fg=textcolor,
+                                  command=versionsettings, bg=backgroundcolor, anchor="w")
         version_settings.grid(row=3, column=0, columnspan=3, sticky='EWNS')
 
         # Button to exit prog without shutting down the Rpi
         def exitprog():
             sys.exit()
-        exitprog_settings = Button(window, bd=2, highlightthickness=0, text="Exit Prog", font=playfont, fg=textcolor, command=exitprog, bg=backgroundcolor, anchor="w", relief=FLAT)
+
+        exitprog_settings = Button(window, bd=2, highlightthickness=0, text="Exit Prog", font=playfont, fg=textcolor,
+                                   command=exitprog, bg=backgroundcolor, anchor="w", relief=FLAT)
         exitprog_settings.grid(row=6, column=2, columnspan=1, sticky='EWNS')
 
     # Setting the Button
     settingsbutton = Button(window, image=settingsDI, bd=0, highlightthickness=0, command=settings, relief=FLAT)
     settingsbutton.grid(row=2, column=1, columnspan=1, sticky='EWNS')
+
     def settingsbuttonhover(e):
         settingsbutton['image'] = settings_hoverDI
+
     def settingsbuttonunhover(e):
         settingsbutton['image'] = settingsDI
+
     settingsbutton.bind("<Enter>", settingsbuttonhover)
     settingsbutton.bind("<Leave>", settingsbuttonunhover)
 
@@ -663,12 +704,16 @@ def menu(nick):
 
     appsbutton = Button(window, image=appsDI, relief=RIDGE, bd=0, highlightthickness=0, command=apps)
     appsbutton.grid(row=1, column=2, columnspan=1, sticky='EWNS')
+
     def appsbuttonhover(e):
         appsbutton['image'] = apps_hoverDI
+
     def appsbuttonunhover(e):
         appsbutton['image'] = appsDI
+
     appsbutton.bind("<Enter>", appsbuttonhover)
     appsbutton.bind("<Leave>", appsbuttonunhover)
+
 
 login()
 window.mainloop()
