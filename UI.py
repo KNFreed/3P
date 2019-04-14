@@ -342,7 +342,7 @@ def menu(nick):
 
     ### Playbutton
     # Define the playbutton
-    playbutton = Button(window, image=playbackground, relief=SOLID, command=menu,  bd=0, highlightthickness=0)
+    playbutton = Button(window, image=playbackground, relief=SOLID, bd=0, highlightthickness=0)
     playbutton.grid(row=1, column=0, columnspan=2, sticky='EWNS')
     # Hover function
     def playbuttonhover(e):
