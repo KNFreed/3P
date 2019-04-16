@@ -481,6 +481,7 @@ def menu(nick):
     ### settingsbutton
 
     def settings():
+        global title_canvas
         # Destroy all the buttons that existed
         destroymenu()
 
@@ -513,7 +514,54 @@ def menu(nick):
                     kmlichange_settings.destroy()
             except:
                 pass
+            try:
+                if adminpanel_settings:
+                    adminpanel_settings.destroy()
+            except:
+                pass
+
             menu(nick)
+
+        def adminuser():
+            title_canvas.destroy()
+            returnbutton.destroy()
+            exitprog_settings.destroy()
+            colormode_settings.destroy()
+            version_settings.destroy()
+            changepassword_settings.destroy()
+            disconnect_settings.destroy()
+            adminpanel_settings.destroy()
+            try:
+                if kmlichange_settings:
+                    kmlichange_settings.destroy()
+            except:
+                pass
+
+
+            def returntosettings():
+                admintitle_canvas.destroy()
+                adminreturnbutton.destroy()
+                changepwdbutton.destroy()
+                settings()
+
+            def adminchangepwd():
+                admintitle_canvas.destroy()
+                adminreturnbutton.destroy()
+                changepwdbutton.destroy()
+
+            # Title Canvas
+            admintitle_canvas = Canvas(window, bg="#ffbe4d", bd=0, highlightthickness=0)
+            admintitle_canvas.create_text(400, 47.5, font=(playfont, 35), text="Account Management", fill="white")
+            admintitle_canvas.grid(row=1, column=1, columnspan=2, sticky='EWNS')
+
+            adminreturnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white",
+                                  command=returntosettings, bg="orange")
+            adminreturnbutton.grid(row=1, column=0, columnspan=1, sticky='EWNS')
+
+            changepwdbutton = Button(window, bd=0, highlightthickness=0, text="Change password of any account", font=playfont, fg="white",
+                                  command=adminchangepwd, bg=backgroundcolor)
+            changepwdbutton.grid(row=2, column=0, columnspan=3, sticky='EWNS')
+
 
         # Switch Dark/Light Button
         def switchmode():
@@ -731,6 +779,11 @@ def menu(nick):
             curs.execute("Update Accounts SET kmli = 0 WHERE nickname = ?", (nick,))
             conn.commit()
             kmlichange_settings['text'] = "You're not staying logged in anymore."
+
+
+        #Créer d'autres boutons
+            #Pas de canvas
+        # Show Change KMLI button only if KMLI is enabled
         curs.execute("Select * from Accounts where kmli = 1 and nickname = ?", (nick,))
         checkkmlisettings = curs.fetchone()
         if checkkmlisettings is not None:
@@ -740,17 +793,28 @@ def menu(nick):
                                          command=changekmli, bg=backgroundcolor, anchor="w")
             kmlichange_settings.grid(row=5, column=0, columnspan=3, sticky='EWNS')
 
+        # Show Change KMLI button only if KMLI is enabled
+        curs.execute("Select * from Accounts where admin = 1 and nickname = ?", (nick,))
+        checkadminsettings = curs.fetchone()
+        if checkadminsettings is not None:
+            adminpanel_settings = Button(window, bd=2, highlightthickness=0, text="Admin Panel",
+                                             font=playfont,
+                                             fg=textcolor,
+                                             command=adminuser, bg=backgroundcolor, anchor="w")
+            adminpanel_settings.grid(row=4, column=2, columnspan=1, sticky='EWNS')
+
+        # Buttons
+
         changepassword_settings = Button(window, bd=2, highlightthickness=0, text="Change Password", font=playfont,
                                          fg=textcolor,
                                          command=changepasswordsettings, bg=backgroundcolor, anchor="w")
-        changepassword_settings.grid(row=4, column=0, columnspan=3, sticky='EWNS')
+        changepassword_settings.grid(row=4, column=0, columnspan=2, sticky='EWNS')
 
         disconnect_settings = Button(window, bd=2, highlightthickness=0, text="Disconnect", font=playfont,
                                          fg=textcolor,
                                          command=disconnectsettings, bg=backgroundcolor, anchor="w")
         disconnect_settings.grid(row=6, column=0, columnspan=2, sticky='EWNS')
 
-        # Buttons
         returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white",
                               command=returnmenu, bg="orange")
         returnbutton.grid(row=1, column=0, columnspan=1, sticky='EWNS')
