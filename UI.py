@@ -12,16 +12,17 @@ window.title('3P! The Console')
 # window.attributes('-fullscreen', True)
 # Uncomment this one for a windows install
 window.geometry("1024x600")
-logo = ImageTk.PhotoImage(master=window, file="./files/logo.png")
-backgroundcolor = '#464d59'
-infobarbackground = "#464d59"
-textcolor = "white"
+
 ###Variables
 # Clock variables
 time1 = ''
 updatedhour = 'None'
-
-
+# Used variables for the login page
+logo = ImageTk.PhotoImage(master=window, file="./files/logo.png")
+backgroundcolor = '#464d59'
+infobarbackground = "#464d59"
+textcolor = "white"
+disconnect = 0
 ### Making a grid to place objects
 def configure():
     window.rowconfigure(0, weight=0)
@@ -106,9 +107,10 @@ storeversion.close()
 
 ### Login/Signup
 def login():
-    global curs, conn
+    global curs, conn, updatedhour, play_hoverDI
+    # Check if an account was already created. If yes, show login page
     if os.path.isfile('./files/account.db'):
-        ### Create a Login/Register Page
+        ### Create a Login/Register page
         signinup = Canvas(window, bg=backgroundcolor, bd=0, highlightthickness=0)
         signinup.grid(row=1, column=0, columnspan=3, rowspan=7, sticky="EWNS")
         conn = sqlite3.connect("./files/account.db")
@@ -116,9 +118,11 @@ def login():
         curs.execute("Select * from Accounts where kmli = 1")
         kmlicheck = curs.fetchone()
 
+        # Create a new account
         def newaccount():
             signinbutton.destroy()
             newaccountbutton.destroy()
+            # Those tries are made to delete errors if previously created
             try:
                 if nicknamerror:
                     signinup.delete(nicknamerror)
@@ -127,6 +131,11 @@ def login():
             try:
                 if passworderror:
                     signinup.delete(passworderror)
+            except:
+                pass
+            try:
+                if kmlierror:
+                    signinup.delete(kmlierror)
             except:
                 pass
 
@@ -141,17 +150,27 @@ def login():
                 kmli = kmliinput.get()
                 curs.execute("Select * from Accounts where nickname = ?", (nick,))
                 nickcheck = curs.fetchone()
+
+                # Verify if the nickname isn't already used
                 if nickcheck is None:
 
+                    # Verify if a password and a nick were written. Made so an account must have a password.
                     if nick != "" and pwd != "":
-                        newaccount = [(nick, pwd, kmli, 0, 0, 0)]
-                        curs.execute("INSERT INTO Accounts VALUES(?,?,?,?,?,?)", newaccount[0])
-                        conn.commit()
-                        darkmodeon()
-                        play_hoverDI = ImageTk.PhotoImage(master=window,
-                                                          file="./files/Menu/Dark/Hover/play_hover.png")
-                        signinup.destroy()
-                        menu(nick)
+                        curs.execute("Select nickname from Accounts where kmli = 1")
+                        kmlicheck = curs.fetchone()
+                        if kmlicheck != "" and kmli == 1:
+                            kmlierror = signinup.create_text(512, 320,
+                                                                text="You can't have 2 accounts automatically logged at the same time.",
+                                                                font=("Helvetica", 10), fill="red")
+                        else:
+                            newaccount = [(nick, pwd, kmli, 0, 0, 0)]
+                            curs.execute("INSERT INTO Accounts VALUES(?,?,?,?,?,?)", newaccount[0])
+                            conn.commit()
+                            darkmodeon()
+                            play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                              file="./files/Menu/Dark/Hover/play_hover.png")
+                            signinup.destroy()
+                            menu(nick)
                     else:
                         error = signinup.create_text(512, 370, text="Please enter a nickname and a password.",
                                                      font=("Helvetica", 10), fill="red")
@@ -171,6 +190,7 @@ def login():
                                   anchor="center", command=goback)
             gobackbutton_window = signinup.create_window(512, 500, anchor=S, window=gobackbutton)
 
+        # Sign in into an existing account
         def signin():
             global updatedhour, play_hoverDI, passworderror
             nick = nickinput.get()
@@ -178,11 +198,14 @@ def login():
             kmli = kmliinput.get()
             curs.execute("Select * from Accounts where nickname = ?", (nick,))
             check1 = curs.fetchone()
+
+            #Check if the nickname written exists in the database.
             if check1 is None:
-                global nicknamerror
+                global nicknamerror, kmlierror
                 nicknamerror = signinup.create_text(512, 320, text="This user doesn't exist", font=("Helvetica", 10),
                                                     fill="red")
             else:
+                # Delete the error after entering a correct nickname
                 try:
                     if nicknamerror:
                         signinup.delete(nicknamerror)
@@ -190,50 +213,99 @@ def login():
                     pass
                 curs.execute("Select * from Accounts where password = ? and nickname = ?", (pwd, nick))
                 check2 = curs.fetchone()
+
+                #Check if the password is correct
                 if check2 is None:
                     passworderror = signinup.create_text(512, 370, text="Wrong password. Please Try again.",
                                                          font=("Helvetica", 10), fill="red")
                 else:
-                    signinup.destroy()
-                    curs.execute("Update Accounts SET kmli = ? WHERE nickname = ?", (kmli, nick))
-                    conn.commit()
-                    # Check what mode is enabled
-                    curs.execute("Select * from Accounts where light = 1 and nickname = ?", (nick,))
-                    checklightmode = curs.fetchone()
-
-                    if checklightmode:
-                        lightmodeon()
-                        curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
-                        checkeasteregg = curs.fetchone()
-                        if checkeasteregg:
-                            play_hoverDI = ImageTk.PhotoImage(master=window,
-                                                              file="./files/Menu/Light/Hover/play_hover_easteregg.png")
-                        else:
-                            play_hoverDI = ImageTk.PhotoImage(master=window,
-                                                              file="./files/Menu/Light/Hover/play_hover.png")
-                        canvas['bg'] = infobarbackground
-                        canvas.delete(updatedhour)
-                        updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
+                    curs.execute("Select nickname from Accounts where kmli = 1")
+                    kmlicheck = curs.fetchone()
+                    if kmlicheck is not None and kmli == 1:
+                        kmlierror = signinup.create_text(512, 320,
+                                                                text="You can't have 2 accounts automatically logged at the same time.",
+                                                                font=("Helvetica", 10), fill="red")
                     else:
-                        darkmodeon()
-                        curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
-                        checkeasteregg = curs.fetchone()
-                        if checkeasteregg:
-                            play_hoverDI = ImageTk.PhotoImage(master=window,
-                                                              file="./files/Menu/Dark/Hover/play_hover_easteregg.png")
-                        else:
-                            play_hoverDI = ImageTk.PhotoImage(master=window,
-                                                              file="./files/Menu/Dark/Hover/play_hover.png")
-                        canvas['bg'] = infobarbackground
-                        canvas.delete(updatedhour)
-                        updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
-                    signinup.destroy()
-                    menu(nick)
+                        signinup.destroy()
+                        curs.execute("Update Accounts SET kmli = ? WHERE nickname = ?", (kmli, nick))
+                        conn.commit()
+                        # Check what mode is enabled
+                        curs.execute("Select * from Accounts where light = 1 and nickname = ?", (nick,))
+                        checklightmode = curs.fetchone()
 
-        if kmlicheck:
+                        # Check if lightmode is on for that user
+                        if checklightmode:
+                            lightmodeon()
+                            curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
+                            checkeasteregg = curs.fetchone()
+
+                            # Check if easteregg is on for that user
+                            if checkeasteregg:
+                                play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                                  file="./files/Menu/Light/Hover/play_hover_easteregg.png")
+                            else:
+                                play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                                  file="./files/Menu/Light/Hover/play_hover.png")
+                            canvas['bg'] = infobarbackground
+                            canvas.delete(updatedhour)
+                            updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
+                        else:
+                            darkmodeon()
+                            curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
+                            checkeasteregg = curs.fetchone()
+                            if checkeasteregg:
+                                play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                                  file="./files/Menu/Dark/Hover/play_hover_easteregg.png")
+                            else:
+                                play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                                  file="./files/Menu/Dark/Hover/play_hover.png")
+                            canvas['bg'] = infobarbackground
+                            canvas.delete(updatedhour)
+                            updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
+                        signinup.destroy()
+                        menu(nick)
+
+        # Check if "Keep me logged in" button was checked, if so, connects automatically
+        if kmlicheck and disconnect == 0:
             curs.execute("Select nickname from Accounts where kmli = 1")
-            nick = curs.fetchone()
-            menu(nick[0])
+            nickname = curs.fetchone()
+            nick = nickname[0]
+            # Check what mode is enabled
+            curs.execute("Select * from Accounts where light = 1 and nickname = ?", (nick,))
+            checklightmode = curs.fetchone()
+
+            # Check if lightmode is on for that user
+            if checklightmode:
+                lightmodeon()
+                curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
+                checkeasteregg = curs.fetchone()
+
+                # Check if easteregg is on for that user
+                if checkeasteregg:
+                    play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                      file="./files/Menu/Light/Hover/play_hover_easteregg.png")
+                else:
+                    play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                      file="./files/Menu/Light/Hover/play_hover.png")
+                canvas['bg'] = infobarbackground
+                canvas.delete(updatedhour)
+                updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
+            else:
+                darkmodeon()
+                curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
+                checkeasteregg = curs.fetchone()
+                if checkeasteregg:
+                    play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                      file="./files/Menu/Dark/Hover/play_hover_easteregg.png")
+                else:
+                    play_hoverDI = ImageTk.PhotoImage(master=window,
+                                                      file="./files/Menu/Dark/Hover/play_hover.png")
+                canvas['bg'] = infobarbackground
+                canvas.delete(updatedhour)
+                updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
+            signinup.destroy()
+            menu(nick)
+
         else:
             # signinin Button
             signinbutton = Button(window, bd=0, highlightthickness=0, text="Sign in", fg=textcolor, bg=backgroundcolor,
@@ -264,17 +336,19 @@ def login():
             signinup.create_window((512, 420), window=f, anchor="n")
             Checkbutton(f, text="Keep me logged in", variable=kmliinput).pack()
 
-
     else:
-        ### Create a Register Page
 
+        # Create a Register Page
         def signup():
             global play_hoverDI, curs, conn
             nick = nickinput.get()
             pwd = pwdinput.get()
             kmli = kmliinput.get()
+            # Create a database
             conn = sqlite3.connect("./files/account.db")
             curs = conn.cursor()
+
+            # Check if there is a password and a nickname written, if so, register it into the database and make it admin
             if nick != "" and pwd != "":
                 curs.execute(
                     "CREATE TABLE Accounts(nickname TEXT,password TEXT,kmli INTEGER,light INTEGER,easteregg INTEGER,admin INTEGER)")
@@ -318,7 +392,6 @@ def login():
         Checkbutton(f, text="Keep me logged in", variable=kmliinput).pack()
         message = register.create_text(512, 320, text="This will be the Admin account", font=("Helvetica", 10),
                                        fill=textcolor)
-
 
 ### UI
 def menu(nick):
@@ -434,6 +507,12 @@ def menu(nick):
             colormode_settings.destroy()
             version_settings.destroy()
             changepassword_settings.destroy()
+            disconnect_settings.destroy()
+            try:
+                if kmlichange_settings:
+                    kmlichange_settings.destroy()
+            except:
+                pass
             menu(nick)
 
         # Switch Dark/Light Button
@@ -542,7 +621,7 @@ def menu(nick):
             curs.execute("Select * from Accounts where easteregg = 1 and nickname = ?", (nick,))
             checkeasteregg = curs.fetchone()
 
-            # Si il est allumé
+            # Check if easter egg is on
             if checkeasteregg:
                 easteregg['text'] = "Easter Egg is on!"
             else:
@@ -630,10 +709,46 @@ def menu(nick):
                                command=changepassword, bg=backgroundcolor, anchor="center")
             changepwd_window = newindow.create_window(512, 350, anchor=S, window=changepwd)
 
+        def disconnectsettings():
+            global disconnect, kmlichange_settings
+            disconnect = 1
+            title_canvas.destroy()
+            returnbutton.destroy()
+            exitprog_settings.destroy()
+            colormode_settings.destroy()
+            version_settings.destroy()
+            changepassword_settings.destroy()
+            disconnect_settings.destroy()
+            canvas.delete(welcometext)
+            try:
+                if kmlichange_settings:
+                    kmlichange_settings.destroy()
+            except:
+                pass
+            login()
+
+        def changekmli():
+            curs.execute("Update Accounts SET kmli = 0 WHERE nickname = ?", (nick,))
+            conn.commit()
+            kmlichange_settings['text'] = "You're not staying logged in anymore."
+        curs.execute("Select * from Accounts where kmli = 1 and nickname = ?", (nick,))
+        checkkmlisettings = curs.fetchone()
+        if checkkmlisettings is not None:
+            kmlichange_settings = Button(window, bd=2, highlightthickness=0, text="Don't stay logged in anymore",
+                                         font=playfont,
+                                         fg=textcolor,
+                                         command=changekmli, bg=backgroundcolor, anchor="w")
+            kmlichange_settings.grid(row=5, column=0, columnspan=3, sticky='EWNS')
+
         changepassword_settings = Button(window, bd=2, highlightthickness=0, text="Change Password", font=playfont,
                                          fg=textcolor,
                                          command=changepasswordsettings, bg=backgroundcolor, anchor="w")
         changepassword_settings.grid(row=4, column=0, columnspan=3, sticky='EWNS')
+
+        disconnect_settings = Button(window, bd=2, highlightthickness=0, text="Disconnect", font=playfont,
+                                         fg=textcolor,
+                                         command=disconnectsettings, bg=backgroundcolor, anchor="w")
+        disconnect_settings.grid(row=6, column=0, columnspan=2, sticky='EWNS')
 
         # Buttons
         returnbutton = Button(window, bd=0, highlightthickness=0, text="Return", font=playfont, fg="white",
