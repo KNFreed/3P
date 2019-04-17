@@ -115,36 +115,51 @@ def menu():
     ### Newsbutton
 
     def news():
-        # Destroy all the buttons that existed
         destroymenu()
 
-        # configure the grid
+    ## Config
+
         window.rowconfigure(0, weight=0)
-        window.rowconfigure(1, weight=1, uniform='fifth')
-        window.rowconfigure(2, weight=1, uniform='fifth')
-        window.rowconfigure(3, weight=1, uniform='fifth')
-        window.rowconfigure(4, weight=1, uniform='fifth')
-        window.rowconfigure(5, weight=1, uniform='fifth')
-        window.rowconfigure(6, weight=1, uniform='fifth')
-        canvas.grid(row=0, column=0, columnspan=3, sticky='EWNS')
+        window.rowconfigure(1, weight=1, uniform='row')
+        window.rowconfigure(2, weight=1, uniform='row')
+        window.rowconfigure(3, weight=1, uniform='row')
+        window.rowconfigure(4, weight=1, uniform='row')
+        window.rowconfigure(5, weight=1, uniform='row')
+        window.columnconfigure(0, weight=1, uniform='column')
+        window.columnconfigure(1, weight=1, uniform='column')
+        window.columnconfigure(2, weight=1, uniform='column')
+        window.columnconfigure(3, weight=1, uniform='column')
+        window.columnconfigure(4, weight=1, uniform='column')
+        window.columnconfigure(5, weight=1, uniform='column')
 
-        # configure the interface
-        frm = Frame(root)
-        b1 = Button(frm, text='Un')
-        b1.grid(row=0, column=2, sticky='NS')
-        b2 = Button(frm, text='Deux')
-        b2.grid(row=0, column=1, sticky='EW')
-        b3 = Button(frm, text='Trois')
-        b3.grid(row=0, column=1, sticky='EW')
+    ## Interface
 
-        reqw = 0
-        for widget in frm.grid_slaves():
-            if widget.winfo_reqwidth() > reqw:
-                reqw = widget.winfo_reqwidth()
-        frm.grid(sticky=E + W)
+    # Title Canvas
+    tcanvas = Canvas(window, bg="#2d9f3c", bd=0, highlightthickness=0)
+    tcanvas.create_text(500, 47.5, font=("Papyrus", 26), text="News", fill="black")
+    tcanvas.grid(row=1, column=0, columnspan=6, sticky='EWNS')
 
-        for r in range(frm.grid_size()[0]):
-            frm.columnconfigure(r, minsize=reqw)
+    # Frames
+
+    fpicture = Frame(window, borderwidth=2, bg="#2b2f37", relief=GROOVE)
+    fpicture.grid(row=2, column=0, rowspan=3, columnspan=3, sticky='EWNS')
+    Label(fpicture, text='Picture').pack(anchor='center')
+
+    ftitlenews = Frame(window, borderwidth=2, bg="#2b2f37", relief=GROOVE)
+    ftitlenews.grid(row=2, column=3, rowspan=1, columnspan=2, sticky='EWNS')
+    Label(ftitlenews, text='Title of News').pack(anchor='center')
+
+    fdescription = Frame(window, borderwidth=2, bg="#2b2f37", relief=GROOVE)
+    fdescription.grid(row=3, column=3, rowspan=3, columnspan=2, sticky='EWNS')
+    Label(fdescription, text='Description').pack(anchor='center')
+
+    # Button
+
+    bnextnew = Button(window, relief=GROOVE, bg="#2b2f37", text='Next New', fg='white')
+    bnextnew.grid(row=2, column=5, rowspan=4, sticky='EWNS')
+
+    breturn = Button(window, relief=GROOVE, bg="#2b2f37", text='Return', fg='white')
+    breturn.grid(row=5, column=0, columnspan=3, sticky='EWNS')
 
     # Define the newsbutton
     newsbutton = Button(window, bg="#60d26f", bd=0, highlightthickness=0, text="News", font=playfont,fg="white", command=destroymenu)
