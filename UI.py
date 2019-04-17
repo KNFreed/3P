@@ -541,13 +541,21 @@ def menu(nick):
             def returntosettings():
                 admintitle_canvas.destroy()
                 adminreturnbutton.destroy()
-                changepwdbutton.destroy()
+                changepwdbutton_admin.destroy()
+                giveadmin_admin.destroy()
                 settings()
 
             def adminchangepwd():
                 admintitle_canvas.destroy()
                 adminreturnbutton.destroy()
-                changepwdbutton.destroy()
+                changepwdbutton_admin.destroy()
+                giveadmin_admin.destroy()
+
+            def admingive():
+                admintitle_canvas.destroy()
+                adminreturnbutton.destroy()
+                changepwdbutton_admin.destroy()
+                giveadmin_admin.destroy()
 
             # Title Canvas
             admintitle_canvas = Canvas(window, bg="#ffbe4d", bd=0, highlightthickness=0)
@@ -558,9 +566,14 @@ def menu(nick):
                                   command=returntosettings, bg="orange")
             adminreturnbutton.grid(row=1, column=0, columnspan=1, sticky='EWNS')
 
-            changepwdbutton = Button(window, bd=0, highlightthickness=0, text="Change password of any account", font=playfont, fg="white",
+            changepwdbutton_admin = Button(window, bd=0, highlightthickness=0, text="Change password of any account", font=playfont, fg=textcolor,
                                   command=adminchangepwd, bg=backgroundcolor)
-            changepwdbutton.grid(row=2, column=0, columnspan=3, sticky='EWNS')
+            changepwdbutton_admin.grid(row=2, column=0, columnspan=3, sticky='EWNS')
+
+            giveadmin_admin = Button(window, bd=0, highlightthickness=0, text="Give admin perms", font=playfont, fg=textcolor, command=admingive, bg=backgroundcolor)
+            giveadmin_admin.grid(row=3, column=0, columnspan=3, sticky='EWNS')
+
+
 
 
         # Switch Dark/Light Button
@@ -767,6 +780,7 @@ def menu(nick):
             version_settings.destroy()
             changepassword_settings.destroy()
             disconnect_settings.destroy()
+            adminpanel_settings.destroy()
             canvas.delete(welcometext)
             try:
                 if kmlichange_settings:
@@ -781,8 +795,6 @@ def menu(nick):
             kmlichange_settings['text'] = "You're not staying logged in anymore."
 
 
-        #Créer d'autres boutons
-            #Pas de canvas
         # Show Change KMLI button only if KMLI is enabled
         curs.execute("Select * from Accounts where kmli = 1 and nickname = ?", (nick,))
         checkkmlisettings = curs.fetchone()
