@@ -6,7 +6,7 @@
 ** 1. Update everything and install Git **
 
 ```
-sudo aptupdate && apt upgrade -y
+sudo apt update; apt upgrade -y
 sudo apt install git-core
 ```
 
