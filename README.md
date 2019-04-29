@@ -3,14 +3,14 @@
 
 # How to install the 3P!
 
-** 1. Update everything and install Git **
+## 1. Update everything and install Git **
 
 ```
 sudo apt update; apt upgrade -y
 sudo apt install git-core
 ```
 
-** 2. Download the source files and execute the script **
+## 2. Download the source files and execute the script
 
 ```
 cd /srv
