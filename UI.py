@@ -550,6 +550,15 @@ def menu(nick):
                 adminreturnbutton.destroy()
                 changepwdbutton_admin.destroy()
                 giveadmin_admin.destroy()
+                curs.execute("Select nickname from Accounts")
+                all = curs.fetchall()
+                curs.execute("Select count(*) from Accounts")
+                count = curs.fetchone()
+                number = count[0]
+                liste=[]
+                for i in range (0,number):
+                    liste.append(all[i])
+                print(liste)
 
             def admingive():
                 admintitle_canvas.destroy()
@@ -771,7 +780,7 @@ def menu(nick):
             changepwd_window = newindow.create_window(512, 350, anchor=S, window=changepwd)
 
         def disconnectsettings():
-            global disconnect, kmlichange_settings
+            global disconnect, backgroundcolor, infobarbackground, textcolor, updatedhour
             disconnect = 1
             title_canvas.destroy()
             returnbutton.destroy()
@@ -780,8 +789,18 @@ def menu(nick):
             version_settings.destroy()
             changepassword_settings.destroy()
             disconnect_settings.destroy()
-            adminpanel_settings.destroy()
+            try:
+                if adminpanel_settings:
+                    adminpanel_settings.destroy()
+            except:
+                pass
             canvas.delete(welcometext)
+            backgroundcolor = '#464d59'
+            infobarbackground = "#464d59"
+            textcolor = "white"
+            canvas['bg'] = infobarbackground
+            canvas.delete(updatedhour)
+            updatedhour = canvas.create_text(30, 15, text=time1, font=("Helvetica", 15), fill=textcolor)
             try:
                 if kmlichange_settings:
                     kmlichange_settings.destroy()
