@@ -3,7 +3,7 @@
 
 # How to install the 3P!
 
-## 1. Update everything and install Git **
+## 1. Update everything and install Git
 
 ```
 sudo apt update; apt upgrade -y
