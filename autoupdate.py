@@ -6,6 +6,4 @@ def update():
     update = repo.remotes.origin
     update.pull()
     os.system('python UI.py')
-    time.sleep(2)
-    window.destroy
 update()
